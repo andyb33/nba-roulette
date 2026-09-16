@@ -20,8 +20,10 @@ The 2023–24 and 2024–25 datasets are complete:
 data/
 ├── game/          # Lightweight JSON consumed by the game
 └── processed/     # Auditable CSV and validation summaries
+nba_roulette/      # Core roulette, scoring, and game-state engine
 docs/              # Data architecture and methodology
 scripts/           # Reproducible collection and verification scripts
+tests/              # Deterministic engine and probability tests
 ```
 
 See [`docs/DATA_README.md`](docs/DATA_README.md) for the schema, source notes,
@@ -29,6 +31,9 @@ eligibility rules, jersey-number policy, and rebuild instructions.
 
 See [`docs/DISTRIBUTION_REPORT.md`](docs/DISTRIBUTION_REPORT.md) for the
 roulette-weighted two-season scoring, Joker, and accolade distributions.
+
+See [`docs/ENGINE.md`](docs/ENGINE.md) for roulette resolution, lock semantics,
+scoring defaults, and engine verification.
 
 ## Rebuild a dataset
 
@@ -41,6 +46,13 @@ python scripts/build_dataset.py --season 2024-25
 
 ```bash
 python scripts/analyze_distributions.py
+```
+
+## Verify the game engine
+
+```bash
+python -m unittest discover -v
+python scripts/verify_engine.py
 ```
 
 ## Game design snapshot

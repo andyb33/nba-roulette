@@ -1,0 +1,74 @@
+{
+  "seed": 20260916,
+  "dataset_records": 895,
+  "sample_sizes": {
+    "standard_spins": 120000,
+    "season_team_locked_spins": 60000,
+    "player_locked_spins": 60000,
+    "spins_per_lock_validity_check": 5000
+  },
+  "maximum_absolute_deviation": {
+    "season": 0.0012750000000000261,
+    "team_by_season": {
+      "2023-24": 0.0019065283138670272,
+      "2024-25": 0.0014812228816517906
+    },
+    "player_with_season_team_locked": 0.0012545454545454526,
+    "locked_player_season": 0.0018000000000000238,
+    "locked_player_team_by_season": {
+      "2023-24": 0.002609393817743888,
+      "2024-25": 0.004351003055666269
+    }
+  },
+  "fixtures": {
+    "largest_team_season_pool": {
+      "season": "2023-24",
+      "team": "TOR",
+      "eligible_players": 22
+    },
+    "multi_stint_player": {
+      "player_id": 203471,
+      "player": "Dennis Schr\u00f6der",
+      "eligible_records": 5,
+      "seasons": [
+        "2023-24",
+        "2024-25"
+      ],
+      "teams_by_season": {
+        "2023-24": [
+          "BKN",
+          "TOR"
+        ],
+        "2024-25": [
+          "BKN",
+          "DET",
+          "GSW"
+        ]
+      }
+    }
+  },
+  "lock_validity": {
+    "season": true,
+    "team": true,
+    "player": true,
+    "season+team": true,
+    "player+season": true,
+    "player+team": true
+  },
+  "tolerances": {
+    "season_absolute": 0.01,
+    "team_absolute": 0.01,
+    "player_absolute": 0.01,
+    "locked_player_season_absolute": 0.01,
+    "locked_player_team_absolute": 0.015
+  },
+  "checks": {
+    "standard_season_weighting": true,
+    "standard_team_weighting": true,
+    "player_weighting_with_season_team_locked": true,
+    "locked_player_season_weighting": true,
+    "locked_player_team_weighting": true,
+    "all_lock_masks_valid": true
+  },
+  "status": "PASS"
+}
