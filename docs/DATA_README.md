@@ -59,3 +59,15 @@ python scripts/build_dataset.py --season 2024-25
 
 Raw responses and existing jersey audit rows are reused on later runs, so a
 rebuild can resume after a temporary API failure.
+
+## Distribution analysis
+
+After rebuilding both season datasets, generate the descriptive balance report:
+
+```bash
+python scripts/analyze_distributions.py
+```
+
+The command writes a Markdown report, JSON summary, CSV tables, and charts under
+`docs/` and `analysis/`. It reports both record-weighted distributions and the
+game's equal Season → Team → Player roulette weighting.

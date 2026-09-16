@@ -27,11 +27,20 @@ scripts/           # Reproducible collection and verification scripts
 See [`docs/DATA_README.md`](docs/DATA_README.md) for the schema, source notes,
 eligibility rules, jersey-number policy, and rebuild instructions.
 
+See [`docs/DISTRIBUTION_REPORT.md`](docs/DISTRIBUTION_REPORT.md) for the
+roulette-weighted two-season scoring, Joker, and accolade distributions.
+
 ## Rebuild a dataset
 
 ```bash
 python scripts/build_dataset.py --season 2023-24
 python scripts/build_dataset.py --season 2024-25
+```
+
+## Rebuild the distribution report
+
+```bash
+python scripts/analyze_distributions.py
 ```
 
 ## Game design snapshot

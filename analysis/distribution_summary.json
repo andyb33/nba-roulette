@@ -1,0 +1,1015 @@
+{
+  "scope": {
+    "seasons": [
+      "2023-24",
+      "2024-25"
+    ],
+    "records": 895,
+    "teams_per_season": 30,
+    "eligibility": {
+      "minimum_team_gp": 15,
+      "minimum_team_mpg": 10.0
+    },
+    "weighting": "Equal season, then equal team, then equal eligible player"
+  },
+  "records_by_season": {
+    "2023-24": 441,
+    "2024-25": 454
+  },
+  "eligible_records_per_team": {
+    "2023-24": {
+      "min": 11,
+      "p10": 12.0,
+      "p25": 12.25,
+      "median": 14.0,
+      "mean": 14.7,
+      "p75": 16.0,
+      "p90": 19.1,
+      "p95": 20.0,
+      "max": 22
+    },
+    "2024-25": {
+      "min": 11,
+      "p10": 12.0,
+      "p25": 13.25,
+      "median": 15.0,
+      "mean": 15.133333333333333,
+      "p75": 16.0,
+      "p90": 19.0,
+      "p95": 19.549999999999997,
+      "max": 21
+    }
+  },
+  "distributions": {
+    "ppg": {
+      "record_weighted": {
+        "min": 1.0,
+        "p10": 4.2,
+        "p25": 6.0,
+        "median": 9.1,
+        "mean": 10.870837988826816,
+        "p75": 14.350000000000001,
+        "p90": 21.0,
+        "p95": 24.0,
+        "max": 34.7
+      },
+      "roulette_weighted": {
+        "min": 1.0,
+        "p10": 4.2,
+        "p25": 6.0,
+        "median": 9.2,
+        "mean": 10.936462152219699,
+        "p75": 14.5,
+        "p90": 21.1,
+        "p95": 24.3,
+        "max": 34.7
+      }
+    },
+    "rpg": {
+      "record_weighted": {
+        "min": 0.6,
+        "p10": 1.8000000000000003,
+        "p25": 2.6,
+        "median": 3.7,
+        "mean": 4.193631284916201,
+        "p75": 5.2,
+        "p90": 7.4,
+        "p95": 8.829999999999997,
+        "max": 13.9
+      },
+      "roulette_weighted": {
+        "min": 0.6,
+        "p10": 1.8,
+        "p25": 2.6,
+        "median": 3.7,
+        "mean": 4.2140884741548446,
+        "p75": 5.2,
+        "p90": 7.4,
+        "p95": 9.2,
+        "max": 13.9
+      }
+    },
+    "apg": {
+      "record_weighted": {
+        "min": 0.3,
+        "p10": 0.8,
+        "p25": 1.2,
+        "median": 2.0,
+        "mean": 2.5791061452513966,
+        "p75": 3.5,
+        "p90": 5.3,
+        "p95": 6.3,
+        "max": 11.6
+      },
+      "roulette_weighted": {
+        "min": 0.3,
+        "p10": 0.8,
+        "p25": 1.2,
+        "median": 2.0,
+        "mean": 2.5897893424729723,
+        "p75": 3.5,
+        "p90": 5.3,
+        "p95": 6.3,
+        "max": 11.6
+      }
+    },
+    "spg": {
+      "record_weighted": {
+        "min": 0.1,
+        "p10": 0.3,
+        "p25": 0.5,
+        "median": 0.7,
+        "mean": 0.7651396648044693,
+        "p75": 0.95,
+        "p90": 1.2,
+        "p95": 1.5,
+        "max": 3.0
+      },
+      "roulette_weighted": {
+        "min": 0.1,
+        "p10": 0.3,
+        "p25": 0.5,
+        "median": 0.7,
+        "mean": 0.7656521893569107,
+        "p75": 1.0,
+        "p90": 1.3,
+        "p95": 1.5,
+        "max": 3.0
+      }
+    },
+    "bpg": {
+      "record_weighted": {
+        "min": 0.0,
+        "p10": 0.1,
+        "p25": 0.2,
+        "median": 0.4,
+        "mean": 0.4794413407821229,
+        "p75": 0.6,
+        "p90": 1.0,
+        "p95": 1.2,
+        "max": 3.8
+      },
+      "roulette_weighted": {
+        "min": 0.0,
+        "p10": 0.1,
+        "p25": 0.2,
+        "median": 0.4,
+        "mean": 0.481629043363757,
+        "p75": 0.6,
+        "p90": 1.0,
+        "p95": 1.2,
+        "max": 3.8
+      }
+    },
+    "gp": {
+      "record_weighted": {
+        "min": 15,
+        "p10": 24.0,
+        "p25": 35.0,
+        "median": 56,
+        "mean": 52.625698324022345,
+        "p75": 70.0,
+        "p90": 77.0,
+        "p95": 80.0,
+        "max": 82
+      },
+      "roulette_weighted": {
+        "min": 15,
+        "p10": 25,
+        "p25": 37,
+        "median": 57,
+        "mean": 54.03415229672002,
+        "p75": 72,
+        "p90": 78,
+        "p95": 80,
+        "max": 82
+      }
+    },
+    "jersey": {
+      "record_weighted": {
+        "min": 0,
+        "p10": 1.0,
+        "p25": 5.0,
+        "median": 12,
+        "mean": 16.579888268156424,
+        "p75": 24.0,
+        "p90": 35.0,
+        "p95": 44.0,
+        "max": 99
+      },
+      "roulette_weighted": {
+        "min": 0,
+        "p10": 1,
+        "p25": 5,
+        "median": 12,
+        "mean": 16.482020715710732,
+        "p75": 24,
+        "p90": 35,
+        "p95": 44,
+        "max": 99
+      }
+    },
+    "pts_score": {
+      "record_weighted": {
+        "min": 2,
+        "p10": 8.0,
+        "p25": 12.0,
+        "median": 18,
+        "mean": 21.721787709497207,
+        "p75": 29.0,
+        "p90": 42.0,
+        "p95": 48.0,
+        "max": 69
+      },
+      "roulette_weighted": {
+        "min": 2,
+        "p10": 8,
+        "p25": 12,
+        "median": 18,
+        "mean": 21.85071172742806,
+        "p75": 29,
+        "p90": 42,
+        "p95": 49,
+        "max": 69
+      }
+    },
+    "reb_score": {
+      "record_weighted": {
+        "min": 2,
+        "p10": 5.0,
+        "p25": 8.0,
+        "median": 11,
+        "mean": 12.631284916201118,
+        "p75": 16.0,
+        "p90": 22.0,
+        "p95": 26.299999999999955,
+        "max": 42
+      },
+      "roulette_weighted": {
+        "min": 2,
+        "p10": 5,
+        "p25": 8,
+        "median": 11,
+        "mean": 12.693010956120476,
+        "p75": 16,
+        "p90": 22,
+        "p95": 28,
+        "max": 42
+      }
+    },
+    "ast_score": {
+      "record_weighted": {
+        "min": 1,
+        "p10": 2.0,
+        "p25": 4.0,
+        "median": 6,
+        "mean": 7.797765363128492,
+        "p75": 11.0,
+        "p90": 16.0,
+        "p95": 19.0,
+        "max": 35
+      },
+      "roulette_weighted": {
+        "min": 1,
+        "p10": 2,
+        "p25": 4,
+        "median": 6,
+        "mean": 7.831089637844669,
+        "p75": 11,
+        "p90": 16,
+        "p95": 19,
+        "max": 35
+      }
+    },
+    "stl_score": {
+      "record_weighted": {
+        "min": 1,
+        "p10": 3.0,
+        "p25": 5.0,
+        "median": 7,
+        "mean": 7.651396648044693,
+        "p75": 9.5,
+        "p90": 12.0,
+        "p95": 15.0,
+        "max": 30
+      },
+      "roulette_weighted": {
+        "min": 1,
+        "p10": 3,
+        "p25": 5,
+        "median": 7,
+        "mean": 7.656521893569107,
+        "p75": 10,
+        "p90": 13,
+        "p95": 15,
+        "max": 30
+      }
+    },
+    "blk_score": {
+      "record_weighted": {
+        "min": 0,
+        "p10": 1.0,
+        "p25": 2.0,
+        "median": 4,
+        "mean": 4.794413407821229,
+        "p75": 6.0,
+        "p90": 10.0,
+        "p95": 12.0,
+        "max": 38
+      },
+      "roulette_weighted": {
+        "min": 0,
+        "p10": 1,
+        "p25": 2,
+        "median": 4,
+        "mean": 4.81629043363757,
+        "p75": 6,
+        "p90": 10,
+        "p95": 12,
+        "max": 38
+      }
+    }
+  },
+  "roulette_distributions_by_season": {
+    "2023-24": {
+      "ppg": {
+        "min": 1.0,
+        "p10": 4.1,
+        "p25": 5.4,
+        "median": 8.9,
+        "mean": 10.775209653392704,
+        "p75": 14.5,
+        "p90": 21.0,
+        "p95": 24.0,
+        "max": 34.7
+      },
+      "rpg": {
+        "min": 0.6,
+        "p10": 1.7,
+        "p25": 2.5,
+        "median": 3.6,
+        "mean": 4.147756443934463,
+        "p75": 5.1,
+        "p90": 7.3,
+        "p95": 9.2,
+        "max": 13.7
+      },
+      "apg": {
+        "min": 0.3,
+        "p10": 0.7,
+        "p25": 1.1,
+        "median": 1.9,
+        "mean": 2.552488055460192,
+        "p75": 3.5,
+        "p90": 5.4,
+        "p95": 6.3,
+        "max": 10.9
+      },
+      "spg": {
+        "min": 0.1,
+        "p10": 0.3,
+        "p25": 0.5,
+        "median": 0.7,
+        "mean": 0.7221795536335011,
+        "p75": 0.9,
+        "p90": 1.2,
+        "p95": 1.4,
+        "max": 2.1
+      },
+      "bpg": {
+        "min": 0.0,
+        "p10": 0.1,
+        "p25": 0.2,
+        "median": 0.4,
+        "mean": 0.489745374852186,
+        "p75": 0.6,
+        "p90": 0.9,
+        "p95": 1.2,
+        "max": 3.6
+      },
+      "gp": {
+        "min": 15,
+        "p10": 26,
+        "p25": 38,
+        "median": 58,
+        "mean": 55.08717737328031,
+        "p75": 72,
+        "p90": 78,
+        "p95": 81,
+        "max": 82
+      },
+      "jersey": {
+        "min": 0,
+        "p10": 1,
+        "p25": 5,
+        "median": 12,
+        "mean": 16.738736853531744,
+        "p75": 24,
+        "p90": 35,
+        "p95": 44,
+        "max": 99
+      },
+      "pts_score": {
+        "min": 2,
+        "p10": 8,
+        "p25": 11,
+        "median": 18,
+        "mean": 21.52936201225675,
+        "p75": 29,
+        "p90": 42,
+        "p95": 48,
+        "max": 69
+      },
+      "reb_score": {
+        "min": 2,
+        "p10": 5,
+        "p25": 8,
+        "median": 11,
+        "mean": 12.48854925561195,
+        "p75": 15,
+        "p90": 22,
+        "p95": 28,
+        "max": 41
+      },
+      "ast_score": {
+        "min": 1,
+        "p10": 2,
+        "p25": 3,
+        "median": 6,
+        "mean": 7.737736612372835,
+        "p75": 11,
+        "p90": 16,
+        "p95": 19,
+        "max": 33
+      },
+      "stl_score": {
+        "min": 1,
+        "p10": 3,
+        "p25": 5,
+        "median": 7,
+        "mean": 7.22179553633501,
+        "p75": 9,
+        "p90": 12,
+        "p95": 14,
+        "max": 21
+      },
+      "blk_score": {
+        "min": 0,
+        "p10": 1,
+        "p25": 2,
+        "median": 4,
+        "mean": 4.89745374852186,
+        "p75": 6,
+        "p90": 9,
+        "p95": 12,
+        "max": 36
+      }
+    },
+    "2024-25": {
+      "ppg": {
+        "min": 1.6,
+        "p10": 4.2,
+        "p25": 6.3,
+        "median": 9.4,
+        "mean": 11.097714651046694,
+        "p75": 14.4,
+        "p90": 21.1,
+        "p95": 24.4,
+        "max": 32.7
+      },
+      "rpg": {
+        "min": 1.0,
+        "p10": 1.9,
+        "p25": 2.7,
+        "median": 3.7,
+        "mean": 4.2804205043752255,
+        "p75": 5.3,
+        "p90": 7.5,
+        "p95": 9.3,
+        "max": 13.9
+      },
+      "apg": {
+        "min": 0.3,
+        "p10": 0.9,
+        "p25": 1.3,
+        "median": 2.0,
+        "mean": 2.6270906294857532,
+        "p75": 3.6,
+        "p90": 5.3,
+        "p95": 6.4,
+        "max": 11.6
+      },
+      "spg": {
+        "min": 0.1,
+        "p10": 0.4,
+        "p25": 0.5,
+        "median": 0.8,
+        "mean": 0.8091248250803205,
+        "p75": 1.0,
+        "p90": 1.3,
+        "p95": 1.5,
+        "max": 3.0
+      },
+      "bpg": {
+        "min": 0.0,
+        "p10": 0.1,
+        "p25": 0.2,
+        "median": 0.4,
+        "mean": 0.473512711875328,
+        "p75": 0.6,
+        "p90": 1.0,
+        "p95": 1.3,
+        "max": 3.8
+      },
+      "gp": {
+        "min": 15,
+        "p10": 24,
+        "p25": 36,
+        "median": 57,
+        "mean": 52.98112722015973,
+        "p75": 71,
+        "p90": 77,
+        "p95": 80,
+        "max": 82
+      },
+      "jersey": {
+        "min": 0,
+        "p10": 1,
+        "p25": 5,
+        "median": 12,
+        "mean": 16.225304577889716,
+        "p75": 23,
+        "p90": 34,
+        "p95": 45,
+        "max": 99
+      },
+      "pts_score": {
+        "min": 3,
+        "p10": 8,
+        "p25": 13,
+        "median": 19,
+        "mean": 22.172061442599368,
+        "p75": 29,
+        "p90": 42,
+        "p95": 49,
+        "max": 65
+      },
+      "reb_score": {
+        "min": 3,
+        "p10": 6,
+        "p25": 8,
+        "median": 11,
+        "mean": 12.897472656629004,
+        "p75": 16,
+        "p90": 23,
+        "p95": 28,
+        "max": 42
+      },
+      "ast_score": {
+        "min": 1,
+        "p10": 3,
+        "p25": 4,
+        "median": 6,
+        "mean": 7.924442663316502,
+        "p75": 11,
+        "p90": 16,
+        "p95": 19,
+        "max": 35
+      },
+      "stl_score": {
+        "min": 1,
+        "p10": 4,
+        "p25": 5,
+        "median": 8,
+        "mean": 8.091248250803204,
+        "p75": 10,
+        "p90": 13,
+        "p95": 15,
+        "max": 30
+      },
+      "blk_score": {
+        "min": 0,
+        "p10": 1,
+        "p25": 2,
+        "median": 4,
+        "mean": 4.7351271187532795,
+        "p75": 6,
+        "p90": 10,
+        "p95": 13,
+        "max": 38
+      }
+    }
+  },
+  "roulette_threshold_probabilities": {
+    "pts_score": {
+      "10": 0.8414877868805888,
+      "20": 0.46796165722249317,
+      "30": 0.2374973298831658,
+      "40": 0.11983976320663628,
+      "50": 0.0408405139751889,
+      "60": 0.007036558213028801
+    },
+    "reb_score": {
+      "10": 0.6279255735234838,
+      "20": 0.14970950983141385,
+      "30": 0.03730331895773072,
+      "40": 0.002904040404040404,
+      "50": 0,
+      "60": 0
+    },
+    "ast_score": {
+      "10": 0.2950437814679301,
+      "20": 0.04744294713141462,
+      "30": 0.0044675925925925924,
+      "40": 0,
+      "50": 0,
+      "60": 0
+    },
+    "stl_score": {
+      "10": 0.2514395180842549,
+      "20": 0.007604523386257132,
+      "30": 0.000925925925925926,
+      "40": 0,
+      "50": 0,
+      "60": 0
+    },
+    "blk_score": {
+      "10": 0.10379808701790126,
+      "20": 0.015378061481002658,
+      "30": 0.002301587301587302,
+      "40": 0,
+      "50": 0,
+      "60": 0
+    },
+    "gp": {
+      "50": 0.612176046347873,
+      "60": 0.4657021374165337,
+      "70": 0.297437591934496,
+      "75": 0.1747110004288797,
+      "80": 0.05999462547256665,
+      "82": 0.03498312553459612
+    },
+    "jersey": {
+      "20": 0.37143459410100277,
+      "30": 0.17216965245796514,
+      "40": 0.08621888452964305,
+      "50": 0.037212426376513064,
+      "60": 0.017079158586511527,
+      "70": 0.015243841126194067,
+      "80": 0.006894167923579688,
+      "90": 0.003242835595776772
+    }
+  },
+  "jersey_bands": {
+    "0-9": {
+      "records": 371,
+      "standard_spin_probability": 0.42039574389032597
+    },
+    "10-19": {
+      "records": 189,
+      "standard_spin_probability": 0.2081696620086713
+    },
+    "20-29": {
+      "records": 181,
+      "standard_spin_probability": 0.19926494164303762
+    },
+    "30-39": {
+      "records": 77,
+      "standard_spin_probability": 0.08595076792832211
+    },
+    "40-49": {
+      "records": 43,
+      "standard_spin_probability": 0.049006458153129984
+    },
+    "50-59": {
+      "records": 18,
+      "standard_spin_probability": 0.020133267790001536
+    },
+    "60-69": {
+      "records": 2,
+      "standard_spin_probability": 0.0018353174603174603
+    },
+    "70-79": {
+      "records": 8,
+      "standard_spin_probability": 0.008349673202614379
+    },
+    "80-89": {
+      "records": 3,
+      "standard_spin_probability": 0.003651332327802916
+    },
+    "90-99": {
+      "records": 3,
+      "standard_spin_probability": 0.003242835595776772
+    }
+  },
+  "gp_bands": {
+    "15-29": {
+      "records": 161,
+      "standard_spin_probability": 0.16210601998334198
+    },
+    "30-49": {
+      "records": 213,
+      "standard_spin_probability": 0.22571793366878506
+    },
+    "50-69": {
+      "records": 277,
+      "standard_spin_probability": 0.314738454413377
+    },
+    "70-79": {
+      "records": 197,
+      "standard_spin_probability": 0.2374429664619293
+    },
+    "80-82": {
+      "records": 47,
+      "standard_spin_probability": 0.05999462547256665
+    },
+    "83+": {
+      "records": 0,
+      "standard_spin_probability": 0
+    }
+  },
+  "accolades": {
+    "all_nba_third": {
+      "records": 10,
+      "standard_spin_probability": 0.01273497335997336,
+      "by_season": {
+        "2023-24": 5,
+        "2024-25": 5
+      }
+    },
+    "all_nba_second": {
+      "records": 10,
+      "standard_spin_probability": 0.012608294483294483,
+      "by_season": {
+        "2023-24": 5,
+        "2024-25": 5
+      }
+    },
+    "all_nba_first": {
+      "records": 10,
+      "standard_spin_probability": 0.012913197913197914,
+      "by_season": {
+        "2023-24": 5,
+        "2024-25": 5
+      }
+    },
+    "champion": {
+      "records": 27,
+      "standard_spin_probability": 0.03333333333333333,
+      "by_season": {
+        "2023-24": 13,
+        "2024-25": 14
+      }
+    },
+    "all_defense_second": {
+      "records": 10,
+      "standard_spin_probability": 0.012672813297813298,
+      "by_season": {
+        "2023-24": 5,
+        "2024-25": 5
+      }
+    },
+    "all_defense_first": {
+      "records": 10,
+      "standard_spin_probability": 0.012178215303215304,
+      "by_season": {
+        "2023-24": 5,
+        "2024-25": 5
+      }
+    },
+    "major_award": {
+      "records": 6,
+      "standard_spin_probability": 0.007678155178155179,
+      "by_season": {
+        "2023-24": 3,
+        "2024-25": 3
+      }
+    }
+  },
+  "top_records": {
+    "pts_score": [
+      {
+        "season": "2023-24",
+        "team": "PHI",
+        "player": "Joel Embiid",
+        "value": 69
+      },
+      {
+        "season": "2023-24",
+        "team": "DAL",
+        "player": "Luka Dončić",
+        "value": 68
+      },
+      {
+        "season": "2024-25",
+        "team": "OKC",
+        "player": "Shai Gilgeous-Alexander",
+        "value": 65
+      },
+      {
+        "season": "2023-24",
+        "team": "MIL",
+        "player": "Giannis Antetokounmpo",
+        "value": 61
+      },
+      {
+        "season": "2024-25",
+        "team": "MIL",
+        "player": "Giannis Antetokounmpo",
+        "value": 61
+      }
+    ],
+    "reb_score": [
+      {
+        "season": "2024-25",
+        "team": "SAC",
+        "player": "Domantas Sabonis",
+        "value": 42
+      },
+      {
+        "season": "2023-24",
+        "team": "SAC",
+        "player": "Domantas Sabonis",
+        "value": 41
+      },
+      {
+        "season": "2023-24",
+        "team": "MIN",
+        "player": "Rudy Gobert",
+        "value": 39
+      },
+      {
+        "season": "2023-24",
+        "team": "LAL",
+        "player": "Anthony Davis",
+        "value": 38
+      },
+      {
+        "season": "2024-25",
+        "team": "LAC",
+        "player": "Ivica Zubac",
+        "value": 38
+      }
+    ],
+    "ast_score": [
+      {
+        "season": "2024-25",
+        "team": "ATL",
+        "player": "Trae Young",
+        "value": 35
+      },
+      {
+        "season": "2023-24",
+        "team": "IND",
+        "player": "Tyrese Haliburton",
+        "value": 33
+      },
+      {
+        "season": "2023-24",
+        "team": "ATL",
+        "player": "Trae Young",
+        "value": 32
+      },
+      {
+        "season": "2024-25",
+        "team": "DEN",
+        "player": "Nikola Jokić",
+        "value": 31
+      },
+      {
+        "season": "2023-24",
+        "team": "DAL",
+        "player": "Luka Dončić",
+        "value": 29
+      }
+    ],
+    "stl_score": [
+      {
+        "season": "2024-25",
+        "team": "ATL",
+        "player": "Dyson Daniels",
+        "value": 30
+      },
+      {
+        "season": "2024-25",
+        "team": "POR",
+        "player": "Matisse Thybulle",
+        "value": 22
+      },
+      {
+        "season": "2023-24",
+        "team": "MEM",
+        "player": "Marcus Smart",
+        "value": 21
+      },
+      {
+        "season": "2023-24",
+        "team": "SAC",
+        "player": "De'Aaron Fox",
+        "value": 20
+      },
+      {
+        "season": "2024-25",
+        "team": "NOP",
+        "player": "Dejounte Murray",
+        "value": 20
+      }
+    ],
+    "blk_score": [
+      {
+        "season": "2024-25",
+        "team": "SAS",
+        "player": "Victor Wembanyama",
+        "value": 38
+      },
+      {
+        "season": "2023-24",
+        "team": "SAS",
+        "player": "Victor Wembanyama",
+        "value": 36
+      },
+      {
+        "season": "2023-24",
+        "team": "MIL",
+        "player": "Brook Lopez",
+        "value": 24
+      },
+      {
+        "season": "2023-24",
+        "team": "UTA",
+        "player": "Walker Kessler",
+        "value": 24
+      },
+      {
+        "season": "2024-25",
+        "team": "UTA",
+        "player": "Walker Kessler",
+        "value": 24
+      }
+    ],
+    "gp": [
+      {
+        "season": "2023-24",
+        "team": "LAL",
+        "player": "Austin Reaves",
+        "value": 82
+      },
+      {
+        "season": "2023-24",
+        "team": "MIL",
+        "player": "Bobby Portis Jr.",
+        "value": 82
+      },
+      {
+        "season": "2024-25",
+        "team": "WAS",
+        "player": "Bub Carrington",
+        "value": 82
+      },
+      {
+        "season": "2024-25",
+        "team": "GSW",
+        "player": "Buddy Hield",
+        "value": 82
+      },
+      {
+        "season": "2023-24",
+        "team": "OKC",
+        "player": "Cason Wallace",
+        "value": 82
+      }
+    ],
+    "jersey": [
+      {
+        "season": "2023-24",
+        "team": "MIL",
+        "player": "Jae Crowder",
+        "value": 99
+      },
+      {
+        "season": "2023-24",
+        "team": "WAS",
+        "player": "Justin Champagnie",
+        "value": 99
+      },
+      {
+        "season": "2024-25",
+        "team": "UTA",
+        "player": "KJ Martin",
+        "value": 99
+      },
+      {
+        "season": "2023-24",
+        "team": "WAS",
+        "player": "Danilo Gallinari",
+        "value": 88
+      },
+      {
+        "season": "2023-24",
+        "team": "BOS",
+        "player": "Neemias Queta",
+        "value": 88
+      }
+    ]
+  }
+}
