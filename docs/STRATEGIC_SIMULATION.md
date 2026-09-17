@@ -12,45 +12,45 @@ The policy played **5,000 complete games** with master seed
 
 | Policy | Mean | P10 | Median | P90 | Bonus rate | Spins/game |
 |---|---:|---:|---:|---:|---:|---:|
-| Random | 129.3 | 88 | 128 | 171 | 0.00% | 28.02 |
-| Greedy | 246.7 | 188 | 243 | 310 | 0.22% | 33.35 |
-| Strategic | 315.8 | 250 | 313 | 385 | 2.50% | 35.31 |
+| Random | 130.5 | 89 | 129 | 172 | 0.06% | 28.02 |
+| Greedy | 249.0 | 189 | 244 | 316 | 4.16% | 33.32 |
+| Strategic | 325.3 | 257 | 322 | 399 | 23.34% | 35.01 |
 
 ## Strategic category outcomes
 
 | Category | Mean | Zero rate | Greedy zero rate |
 |---|---:|---:|---:|
-| Points | 43.74 | 0.00% | 0.00% |
-| Rebounds | 24.59 | 0.00% | 0.00% |
-| Assists | 17.00 | 0.00% | 0.00% |
-| Steals | 12.20 | 0.00% | 0.00% |
-| Blocks | 11.71 | 0.00% | 0.89% |
-| Games Played | 76.67 | 0.00% | 0.00% |
-| All Nba Third | 1.67 | 91.64% | 90.69% |
-| All Nba Second | 6.28 | 79.08% | 84.46% |
-| All Nba First | 14.20 | 64.50% | 81.24% |
-| Champion | 14.52 | 41.94% | 54.58% |
-| All Defense Second | 11.69 | 61.04% | 72.84% |
-| All Defense First | 16.20 | 59.50% | 77.39% |
-| Major Award | 17.82 | 64.36% | 79.17% |
-| Jersey | 46.68 | 0.00% | 0.00% |
+| Points | 43.76 | 0.00% | 0.00% |
+| Rebounds | 24.45 | 0.00% | 0.00% |
+| Assists | 16.81 | 0.00% | 0.00% |
+| Steals | 12.18 | 0.00% | 0.00% |
+| Blocks | 11.81 | 0.00% | 0.86% |
+| Games Played | 76.69 | 0.00% | 0.00% |
+| All Nba Third | 6.05 | 69.76% | 89.64% |
+| All Nba Second | 14.41 | 51.96% | 83.25% |
+| All Nba First | 11.11 | 72.22% | 81.25% |
+| Champion | 14.35 | 42.60% | 54.82% |
+| All Defense Second | 15.05 | 49.84% | 71.32% |
+| All Defense First | 12.35 | 69.12% | 77.39% |
+| Major Award | 11.44 | 77.12% | 79.20% |
+| Jersey | 46.65 | 0.00% | 0.00% |
 
 ## Lock use
 
 | Lock mask | Average uses per game |
 |---|---:|
-| none | 4.17 |
-| player | 2.53 |
-| season | 5.83 |
+| none | 3.95 |
+| player | 2.61 |
+| season | 5.35 |
 | season+player | 0.16 |
-| season+team | 5.65 |
-| team | 2.80 |
+| season+team | 5.84 |
+| team | 2.94 |
 | team+player | 0.16 |
 
 ## Findings
 
-- Strategic play changes mean score by **+69.1 points** versus Greedy.
-- The Upper Bonus rate rises from **0.22%** to **2.50%**.
+- Strategic play changes mean score by **+76.3 points** versus Greedy.
+- The Upper Bonus rate rises from **4.16%** to **23.34%**.
 - Category zero rates show whether lock knowledge meaningfully improves rare
   accolades rather than merely increasing common statistical scores.
 - The heuristic's assumptions should be varied in sensitivity tests before any

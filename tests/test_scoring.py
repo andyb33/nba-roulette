@@ -38,13 +38,27 @@ class ScoringTests(unittest.TestCase):
         self.assertEqual(category_score(item, Category.GAMES_PLAYED), 81)
         self.assertEqual(category_score(item, Category.JERSEY), 77)
 
-    def test_accolades_require_exact_tiers(self) -> None:
+    def test_all_nba_tiers_are_cumulative(self) -> None:
+        first = record(all_nba=1)
+        second = record(all_nba=2)
+        third = record(all_nba=3)
+        categories = (
+            Category.ALL_NBA_FIRST, Category.ALL_NBA_SECOND, Category.ALL_NBA_THIRD,
+        )
+        self.assertEqual([category_score(first, category) for category in categories], [40, 30, 20])
+        self.assertEqual([category_score(second, category) for category in categories], [0, 30, 20])
+        self.assertEqual([category_score(third, category) for category in categories], [0, 0, 20])
+
+    def test_all_defense_tiers_are_cumulative(self) -> None:
+        first = record(all_defense=1)
+        second = record(all_defense=2)
+        self.assertEqual(category_score(first, Category.ALL_DEFENSE_FIRST), 40)
+        self.assertEqual(category_score(first, Category.ALL_DEFENSE_SECOND), 30)
+        self.assertEqual(category_score(second, Category.ALL_DEFENSE_FIRST), 0)
+        self.assertEqual(category_score(second, Category.ALL_DEFENSE_SECOND), 30)
+
+    def test_binary_accolades_keep_fixed_scores(self) -> None:
         item = record()
-        self.assertEqual(category_score(item, Category.ALL_NBA_FIRST), 40)
-        self.assertEqual(category_score(item, Category.ALL_NBA_SECOND), 0)
-        self.assertEqual(category_score(item, Category.ALL_NBA_THIRD), 0)
-        self.assertEqual(category_score(item, Category.ALL_DEFENSE_FIRST), 0)
-        self.assertEqual(category_score(item, Category.ALL_DEFENSE_SECOND), 30)
         self.assertEqual(category_score(item, Category.CHAMPION), 25)
         self.assertEqual(category_score(item, Category.MAJOR_AWARD), 50)
 

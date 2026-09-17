@@ -101,7 +101,7 @@ def write_report(summary: dict) -> None:
         f"- Greedy improves mean score by **{summary['policies']['greedy']['total_score']['mean'] - summary['policies']['random']['total_score']['mean']:.1f} points** over Random without using locks.",
         f"- The Upper Bonus appeared in **{summary['policies']['random']['upper_bonus_rate']:.2%}** of Random games and **{summary['policies']['greedy']['upper_bonus_rate']:.2%}** of Greedy games.",
         "- Accolades remain the main source of zeroes. Even Greedy scored zero in most",
-        "  exact-team All-NBA, All-Defense, and Major Award slots.",
+        "  cumulative-tier All-NBA and All-Defense slots, plus Major Award.",
         "- GP is the strongest reliable category, while Jersey provides a large but",
         "  volatile score. A strategic policy must account for both before judging balance.",
         "",

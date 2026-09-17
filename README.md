@@ -45,6 +45,10 @@ See [`docs/GDD_V1_1_CHANGELOG.md`](docs/GDD_V1_1_CHANGELOG.md) for the evidence-
 based change from the original 140-point bonus threshold to the 120-point
 prototype rule.
 
+See [`docs/GDD_V1_2_CHANGELOG.md`](docs/GDD_V1_2_CHANGELOG.md) and
+[`docs/HUMAN_PLAYTEST_01.md`](docs/HUMAN_PLAYTEST_01.md) for the cumulative
+accolade rule and terminology changes made after the first human playtest.
+
 ## Rebuild a dataset
 
 ```bash
@@ -81,7 +85,8 @@ python scripts/play_game.py
 
 ## Game design snapshot
 
-Each turn produces a valid `Season → Team → Player` combination. Players may
-lock and reroll those slots before assigning the final player-team-season to an
-unused scorecard category. The initial game design uses 14 categories and up to
-three spins per turn.
+Each turn produces a valid `Season → Team → Player` combination. Before a
+reroll, players explicitly choose which slots to **keep**; all other slots are
+rerolled. The final player-team-season is assigned to an unused scorecard
+category. The initial game design uses 14 categories and up to three spins per
+turn.

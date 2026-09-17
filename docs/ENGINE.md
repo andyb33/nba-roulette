@@ -43,7 +43,9 @@ them. A new lock set applies to the current result.
 ## Scoring Defaults
 
 - Statistical scores use round-half-up, not Python's default bankers' rounding.
-- All-NBA and All-Defense categories require the exact team level.
+- All-NBA and All-Defense categories are cumulative: first-team selections also
+  qualify for lower-team categories, and second-team All-NBA selections also
+  qualify for All-NBA Third Team.
 - Major Award scores 50 once if MVP, DPOY, or ROTY is true; awards do not stack.
 - Individual awards follow the player-season metadata on each eligible stint.
 - Champion follows the selected team-specific record.

@@ -35,14 +35,14 @@ def show_turn(game: GameState) -> None:
     ))
 
 
-def parse_locks(words: list[str]) -> set[Lock]:
+def parse_kept_slots(words: list[str]) -> set[Lock]:
     mapping = {lock.value: lock for lock in Lock}
     unknown = [word for word in words if word not in mapping]
     if unknown:
-        raise ValueError(f"Unknown lock(s): {', '.join(unknown)}")
+        raise ValueError(f"Unknown slot(s) to keep: {', '.join(unknown)}")
     locks = {mapping[word] for word in words}
     if locks == set(Lock):
-        raise ValueError("Locking all three slots leaves nothing to reroll")
+        raise ValueError("Keeping all three slots leaves nothing to reroll")
     return locks
 
 
@@ -53,7 +53,7 @@ def main() -> None:
     seed = args.seed if args.seed is not None else random.SystemRandom().randrange(1_000_000_000)
     game = GameState(RouletteEngine(load_records(), random.Random(seed)))
     print(f"NBA Roulette · seed {seed}")
-    print("Commands: reroll [season] [team] [player]  OR  score <number/name>")
+    print("Commands: keep [season] [team] [player] | reroll | score <number/name>")
 
     while not game.is_complete:
         game.start_turn()
@@ -63,10 +63,18 @@ def main() -> None:
             if not command:
                 continue
             try:
-                if command[0] in {"r", "reroll"}:
+                if command[0] in {"k", "keep"}:
                     if game.turn.spins_used >= MAX_SPINS_PER_TURN:
                         raise ValueError("No rerolls remain")
-                    game.reroll(parse_locks(command[1:]))
+                    if len(command) == 1:
+                        raise ValueError("Name at least one slot to keep")
+                    game.reroll(parse_kept_slots(command[1:]))
+                elif command[0] in {"r", "reroll"}:
+                    if game.turn.spins_used >= MAX_SPINS_PER_TURN:
+                        raise ValueError("No rerolls remain")
+                    if len(command) != 1:
+                        raise ValueError("Use 'keep season/team/player' to preserve slots")
+                    game.reroll()
                 elif command[0] in {"s", "score"} and len(command) == 2:
                     open_categories = game.open_categories
                     if command[1].isdigit():
@@ -79,7 +87,7 @@ def main() -> None:
                     value = game.score(category)
                     print(f"Scored {value} in {category.value}.")
                 else:
-                    raise ValueError("Use: reroll [locks] or score <number/name>")
+                    raise ValueError("Use: keep [slots], reroll, or score <number/name>")
             except (ValueError, RuntimeError) as error:
                 print(f"Invalid choice: {error}")
 
