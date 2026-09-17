@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NBA Roulette</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">YAHTZEE-INSPIRED NBA STRATEGY</p>
+      <h1>NBA Roulette</h1>
+    </div>
+    <button id="new-game" class="secondary">New Game</button>
+  </header>
+
+  <main class="layout">
+    <section class="game-panel">
+      <div class="progress-row">
+        <span id="turn-label">Turn 1 / 14</span>
+        <span id="spin-label">Ready to spin</span>
+      </div>
+
+      <div class="roulette" aria-label="Season, team, and player roulette">
+        <button class="slot" data-keep="season" disabled>
+          <span class="slot-label">Season</span>
+          <strong id="season-value">—</strong>
+          <span class="keep-text">Keep</span>
+        </button>
+        <button class="slot" data-keep="team" disabled>
+          <span class="slot-label">Team</span>
+          <strong id="team-value">—</strong>
+          <span class="keep-text">Keep</span>
+        </button>
+        <button class="slot player-slot" data-keep="player" disabled>
+          <span class="slot-label">Player</span>
+          <strong id="player-value">—</strong>
+          <span class="keep-text">Keep</span>
+        </button>
+      </div>
+
+      <button id="spin" class="spin-button">Spin</button>
+      <p id="message" class="message" role="status"></p>
+
+      <article id="player-card" class="player-card hidden">
+        <div class="player-heading">
+          <div>
+            <p id="player-context" class="eyebrow"></p>
+            <h2 id="player-name"></h2>
+          </div>
+          <div id="jersey" class="jersey"></div>
+        </div>
+        <div id="stats" class="stats"></div>
+        <p id="awards" class="awards"></p>
+      </article>
+    </section>
+
+    <aside class="score-panel">
+      <div class="score-header">
+        <div>
+          <span>Total</span>
+          <strong id="total-score">0</strong>
+        </div>
+        <div>
+          <span>Upper</span>
+          <strong><span id="upper-score">0</span> / 120</strong>
+        </div>
+        <div>
+          <span>Bonus</span>
+          <strong id="bonus-score">0</strong>
+        </div>
+      </div>
+      <div id="scorecard"></div>
+    </aside>
+  </main>
+
+  <dialog id="finished">
+    <p class="eyebrow">GAME COMPLETE</p>
+    <h2>Final score: <span id="final-score"></span></h2>
+    <button id="play-again" class="spin-button">Play Again</button>
+  </dialog>
+
+  <script src="/app.js" defer></script>
+</body>
+</html>

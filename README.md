@@ -90,6 +90,17 @@ python scripts/summarize_simulation_rerun.py
 python scripts/play_game.py
 ```
 
+## Run the browser prototype
+
+```bash
+python scripts/run_web.py
+```
+
+Then open `http://127.0.0.1:8000`. The prototype uses only the Python standard
+library and the existing game engine; no additional packages are required.
+See [`docs/WEB_PROTOTYPE.md`](docs/WEB_PROTOTYPE.md) for the included features,
+architecture, and deliberate limitations.
+
 ## Game design snapshot
 
 Each turn produces a valid `Season → Team → Player` combination. Before a
