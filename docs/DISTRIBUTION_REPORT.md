@@ -1,24 +1,24 @@
-# NBA Roulette — Two-Season Distribution Report
+# NBA Roulette — Three-Season Distribution Report
 
-**Seasons:** 2023–24 and 2024–25  
-**Eligible player-team-season records:** 895  
-**Eligibility:** 15+ GP and 10.0+ MPG for the selected team  
-**Status:** Descriptive balance analysis; roulette strategy simulation is intentionally excluded.
+- **Seasons:** 2023–24 through 2025–26
+- **Eligible player-team-season records:** 1346
+- **Eligibility:** 15+ GP and 10.0+ MPG for the selected team
+- **Status:** Descriptive balance analysis; the three-season roulette simulation follows separately.
 
 ## Executive Summary
 
-- The five performance categories are not naturally equal after weighting. PTS has a roulette-weighted median of 18, while BLK has a median of 4.
-- PTS supplies the highest routine scores. AST, STL, and especially BLK require specialist outcomes and are likely to constrain the 140-point Upper Bonus.
+- The five performance categories are not naturally equal after weighting. PTS has a roulette-weighted median of 19, while BLK has a median of 4.
+- PTS supplies the highest routine scores. AST, STL, and especially BLK remain the specialist outcomes most likely to constrain the 120-point Upper Bonus.
 - GP is a consistently valuable Joker: median 57, P90 78, and maximum 82.
-- Jersey is intentionally volatile: median 12, P90 35, and maximum 99. High numbers produce rare rescue or jackpot outcomes.
-- Accolades are rare on a fully unlocked spin. Major Award qualifies 0.77% of the time, while each exact All-NBA team qualifies about 1.26%–1.29%.
-- No scoring change is justified from distributions alone. The current 140-point bonus should remain a test hypothesis until lock-aware simulation measures attainable full-game scores.
+- Jersey is intentionally volatile: median 12, P90 34, and maximum 99. High numbers produce rare rescue or jackpot outcomes.
+- Cumulative tiers create the intended rarity ladder: All-NBA Third accepts 3.77% of unlocked spins, Second accepts 2.54%, and First accepts 1.28%.
+- Adding 2025–26 does not by itself justify a scoring change. The 120 → +35 rule should be judged again in the upcoming three-season simulation.
 
 ## Method
 
 The canonical observation is one **Player × Team × Season** record. The report distinguishes:
 
-1. **Record-weighted distributions**, where each of the 895 rows counts equally.
+1. **Record-weighted distributions**, where each of the 1,346 rows counts equally.
 2. **Roulette-weighted distributions**, matching the game rule: equal Season → equal Team → equal eligible Player.
 
 The second view is the relevant gameplay baseline because team roster sizes vary. Scores use the GDD multipliers and round-half-up rule:
@@ -35,11 +35,11 @@ The second view is the relevant gameplay baseline because team roster sizes vary
 
 | Category | Mean | Median | P75 | P90 | P95 | Maximum |
 |---|---:|---:|---:|---:|---:|---:|
-| PTS ×2 | 21.9 | 18 | 29 | 42 | 49 | 69 |
-| REB ×3 | 12.7 | 11 | 16 | 22 | 28 | 42 |
+| PTS ×2 | 22.1 | 19 | 29 | 42 | 48 | 69 |
+| REB ×3 | 12.7 | 11 | 16 | 22 | 27 | 42 |
 | AST ×3 | 7.8 | 6 | 11 | 16 | 19 | 35 |
-| STL ×10 | 7.7 | 7 | 10 | 13 | 15 | 30 |
-| BLK ×10 | 4.8 | 4 | 6 | 10 | 12 | 38 |
+| STL ×10 | 7.8 | 7 | 10 | 13 | 15 | 30 |
+| BLK ×10 | 4.7 | 4 | 6 | 10 | 12 | 38 |
 
 ![Statistical category distributions](../analysis/charts/stat_score_distributions.png)
 
@@ -53,25 +53,36 @@ The second view is the relevant gameplay baseline because team roster sizes vary
 
 ## Season Comparison
 
-| Category | 2023–24 mean | 2024–25 mean | Change |
+| Category | 2023-24 mean | 2024-25 mean | 2025-26 mean |
 |---|---:|---:|---:|
-| PTS ×2 | 21.5 | 22.2 | +0.6 |
-| REB ×3 | 12.5 | 12.9 | +0.4 |
-| AST ×3 | 7.7 | 7.9 | +0.2 |
-| STL ×10 | 7.2 | 8.1 | +0.9 |
-| BLK ×10 | 4.9 | 4.7 | -0.2 |
-
+| PTS ×2 | 21.5 | 22.2 | 22.5 |
+| REB ×3 | 12.5 | 12.9 | 12.6 |
+| AST ×3 | 7.7 | 7.9 | 7.9 |
+| STL ×10 | 7.2 | 8.1 | 8.1 |
+| BLK ×10 | 4.9 | 4.7 | 4.5 |
 
 ![Season score comparison](../analysis/charts/season_score_comparison.png)
 
-The two seasons have similar category means. No multiplier conclusion in this report depends on a single-season anomaly.
+## Effect of Adding 2025–26
+
+| Category | Two-season mean | Three-season mean | Change |
+|---|---:|---:|---:|
+| PTS ×2 | 21.9 | 22.1 | +0.2 |
+| REB ×3 | 12.7 | 12.7 | -0.0 |
+| AST ×3 | 7.8 | 7.8 | +0.0 |
+| STL ×10 | 7.7 | 7.8 | +0.1 |
+| BLK ×10 | 4.8 | 4.7 | -0.1 |
+| GP | 54.0 | 54.0 | -0.0 |
+| JERSEY | 16.5 | 16.4 | -0.1 |
+
+This comparison uses roulette weighting in both pools. It isolates whether adding the third season materially changes the distribution rather than merely adding more rows.
 
 ## Joker Categories
 
 | Category | Mean | Median | P75 | P90 | P95 | Maximum |
 |---|---:|---:|---:|---:|---:|---:|
-| GP | 54.0 | 57 | 72 | 78 | 80 | 82 |
-| Jersey | 16.5 | 12 | 24 | 35 | 44 | 99 |
+| GP | 54.0 | 57 | 71 | 78 | 80 | 82 |
+| Jersey | 16.4 | 12 | 24 | 34 | 44 | 99 |
 
 ![Joker distributions](../analysis/charts/joker_distributions.png)
 
@@ -81,17 +92,17 @@ GP is the safer Joker; Jersey has the heavier upside tail. That distinction supp
 
 | Category | Eligible records | Standard-spin probability | Score |
 |---|---:|---:|---:|
-| All-NBA Third | 10 | 1.27% | 20 |
-| All-NBA Second | 10 | 1.26% | 30 |
-| All-NBA First | 10 | 1.29% | 40 |
-| Champion | 27 | 3.33% | 25 |
-| All-Defense Second | 10 | 1.27% | 30 |
-| All-Defense First | 10 | 1.22% | 40 |
-| Major Award | 6 | 0.77% | 50 |
+| All-NBA Third (First/Second/Third eligible) | 45 | 3.77% | 20 |
+| All-NBA Second (First/Second eligible) | 30 | 2.54% | 30 |
+| All-NBA First | 15 | 1.28% | 40 |
+| Champion | 38 | 3.33% | 25 |
+| All-Defense Second (First/Second eligible) | 30 | 2.52% | 30 |
+| All-Defense First | 15 | 1.24% | 40 |
+| Major Award | 9 | 0.75% | 50 |
 
 ![Accolade probabilities](../analysis/charts/accolade_probabilities.png)
 
-Major Award and exact All-Defensive teams are the rarest targets. Their balance cannot be evaluated from raw frequency alone because team, player, and season locks are designed to increase targeted odds.
+Major Award and First-team categories remain the rarest targets. The cumulative rule makes lower-tier categories appropriately easier without changing their fixed scores.
 
 ## Observed Category Ceilings
 
@@ -110,6 +121,7 @@ Major Award and exact All-Defensive teams are the rarest targets. Their balance 
 
 - 2023–24: 441 eligible records.
 - 2024–25: 454 eligible records.
+- 2025–26: 451 eligible records.
 - Every season contains all 30 teams.
 - Eligible roster sizes range from 11 to 22 players per team-season.
 - The analysis contains no missing jersey values and no records below the eligibility thresholds.
@@ -118,9 +130,9 @@ Major Award and exact All-Defensive teams are the rarest targets. Their balance 
 
 1. Retain the existing statistical multipliers for the first playable prototype.
 2. Retain GP and Jersey as deliberately different Joker distributions.
-3. Retain the fixed accolade scores until lock-aware simulation estimates hunt difficulty.
-4. Keep **140 → +35** as the Upper Bonus test rule. This report identifies its likely bottlenecks but does not estimate strategic achievement rate.
-5. Run the roulette simulation before changing scoring or adding artificial rarity adjustments.
+3. Retain cumulative accolade eligibility and the fixed accolade scores.
+4. Retain **120 → +35** for the next simulation; distributions alone do not overturn the playtest and two-season simulation evidence.
+5. Rerun Random, Greedy, Strategic, and sensitivity simulations before making another balance change.
 
 ## Reproduce
 
@@ -128,4 +140,4 @@ Major Award and exact All-Defensive teams are the rarest targets. Their balance 
 python scripts/analyze_distributions.py
 ```
 
-This regenerates the JSON summary, CSV tables, charts, and this report from the two processed season datasets.
+This regenerates the JSON summary, CSV tables, charts, and this report from the three processed season datasets.

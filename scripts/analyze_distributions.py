@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Produce the two-season NBA Roulette distribution analysis and charts."""
+"""Produce the three-season NBA Roulette distribution analysis and charts."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 
 
 ROOT = Path(__file__).resolve().parent.parent
-SEASONS = ("2023-24", "2024-25")
+SEASONS = ("2023-24", "2024-25", "2025-26")
 SLUGS = {season: season.replace("-", "_") for season in SEASONS}
 ANALYSIS = ROOT / "analysis"
 CHARTS = ANALYSIS / "charts"
@@ -160,11 +160,11 @@ def build_summary(records: list[dict]) -> dict:
 
     accolade = {}
     qualifiers = {
-        "all_nba_third": lambda r: r["all_nba"] == 3,
-        "all_nba_second": lambda r: r["all_nba"] == 2,
+        "all_nba_third": lambda r: r["all_nba"] in (1, 2, 3),
+        "all_nba_second": lambda r: r["all_nba"] in (1, 2),
         "all_nba_first": lambda r: r["all_nba"] == 1,
         "champion": lambda r: r["champion"],
-        "all_defense_second": lambda r: r["all_defense"] == 2,
+        "all_defense_second": lambda r: r["all_defense"] in (1, 2),
         "all_defense_first": lambda r: r["all_defense"] == 1,
         "major_award": lambda r: r["mvp"] or r["dpoy"] or r["roy"],
     }
@@ -182,6 +182,10 @@ def build_summary(records: list[dict]) -> dict:
                     (50, 59), (60, 69), (70, 79), (80, 89), (90, 99)]
     gp_bands = [(15, 29), (30, 49), (50, 69), (70, 79), (80, 82), (83, 99)]
 
+    baseline_rows = [row for row in records if row["season"] != "2025-26"]
+    baseline_weight_total = sum(row["roulette_weight"] for row in baseline_rows)
+    baseline_weights = [row["roulette_weight"] / baseline_weight_total for row in baseline_rows]
+
     return {
         "scope": {
             "seasons": list(SEASONS),
@@ -197,6 +201,10 @@ def build_summary(records: list[dict]) -> dict:
         },
         "distributions": distribution,
         "roulette_distributions_by_season": distribution_by_season,
+        "two_season_baseline": {
+            field: summarize([row[field] for row in baseline_rows], baseline_weights)
+            for field in RAW_METRICS + SCORE_FIELDS
+        },
         "roulette_threshold_probabilities": score_thresholds,
         "jersey_bands": {
             f"{low}-{high}": {
@@ -293,11 +301,12 @@ def save_chart_accolades(summary: dict) -> None:
 def save_chart_season_comparison(summary: dict) -> None:
     fields = list(SCORE_FIELDS)
     x = range(len(fields))
-    width = 0.36
+    width = 0.25
     fig, ax = plt.subplots(figsize=(9.5, 5.2))
     for index, season in enumerate(SEASONS):
         values = [summary["roulette_distributions_by_season"][season][field]["mean"] for field in fields]
-        ax.bar([item + (index - 0.5) * width for item in x], values, width, label=season)
+        offset = index - (len(SEASONS) - 1) / 2
+        ax.bar([item + offset * width for item in x], values, width, label=season)
     ax.set_xticks(list(x), [SCORE_LABELS[field] for field in fields])
     ax.set_ylabel("Mean score")
     ax.set_title("Mean statistical scores by season")
@@ -334,31 +343,50 @@ def write_report(summary: dict) -> None:
     def pct(value: float) -> str:
         return f"{value * 100:.2f}%"
 
-    all_nba_probabilities = [
-        accolades[key]["standard_spin_probability"]
-        for key in ("all_nba_third", "all_nba_second", "all_nba_first")
-    ]
-    report = f"""# NBA Roulette — Two-Season Distribution Report
+    season_header = " | ".join(f"{season} mean" for season in SEASONS)
+    season_alignment = "|".join("---:" for _ in SEASONS)
+    season_rows = []
+    for field in SCORE_FIELDS:
+        values = [summary["roulette_distributions_by_season"][season][field]["mean"] for season in SEASONS]
+        season_rows.append(
+            f"| {SCORE_LABELS[field]} | " + " | ".join(f"{value:.1f}" for value in values) + " |"
+        )
+    season_table = (
+        f"| Category | {season_header} |\n"
+        f"|---|{season_alignment}|\n" + "\n".join(season_rows)
+    )
+    comparison_rows = []
+    for field in SCORE_FIELDS + ("gp", "jersey"):
+        old = summary["two_season_baseline"][field]["mean"]
+        new = summary["distributions"][field]["roulette_weighted"]["mean"]
+        comparison_rows.append(
+            f"| {SCORE_LABELS.get(field, field.upper())} | {old:.1f} | {new:.1f} | {new-old:+.1f} |"
+        )
+    comparison_table = (
+        "| Category | Two-season mean | Three-season mean | Change |\n"
+        "|---|---:|---:|---:|\n" + "\n".join(comparison_rows)
+    )
+    report = f"""# NBA Roulette — Three-Season Distribution Report
 
-**Seasons:** 2023–24 and 2024–25  
-**Eligible player-team-season records:** {summary['scope']['records']}  
-**Eligibility:** 15+ GP and 10.0+ MPG for the selected team  
-**Status:** Descriptive balance analysis; roulette strategy simulation is intentionally excluded.
+- **Seasons:** 2023–24 through 2025–26
+- **Eligible player-team-season records:** {summary['scope']['records']}
+- **Eligibility:** 15+ GP and 10.0+ MPG for the selected team
+- **Status:** Descriptive balance analysis; the three-season roulette simulation follows separately.
 
 ## Executive Summary
 
 - The five performance categories are not naturally equal after weighting. PTS has a roulette-weighted median of {format_value(summary['distributions']['pts_score']['roulette_weighted']['median'])}, while BLK has a median of {format_value(summary['distributions']['blk_score']['roulette_weighted']['median'])}.
-- PTS supplies the highest routine scores. AST, STL, and especially BLK require specialist outcomes and are likely to constrain the 140-point Upper Bonus.
+- PTS supplies the highest routine scores. AST, STL, and especially BLK remain the specialist outcomes most likely to constrain the 120-point Upper Bonus.
 - GP is a consistently valuable Joker: median {format_value(gp['median'])}, P90 {format_value(gp['p90'])}, and maximum {format_value(gp['max'])}.
 - Jersey is intentionally volatile: median {format_value(jersey['median'])}, P90 {format_value(jersey['p90'])}, and maximum {format_value(jersey['max'])}. High numbers produce rare rescue or jackpot outcomes.
-- Accolades are rare on a fully unlocked spin. Major Award qualifies {pct(accolades['major_award']['standard_spin_probability'])} of the time, while each exact All-NBA team qualifies about {pct(min(all_nba_probabilities))}–{pct(max(all_nba_probabilities))}.
-- No scoring change is justified from distributions alone. The current 140-point bonus should remain a test hypothesis until lock-aware simulation measures attainable full-game scores.
+- Cumulative tiers create the intended rarity ladder: All-NBA Third accepts {pct(accolades['all_nba_third']['standard_spin_probability'])} of unlocked spins, Second accepts {pct(accolades['all_nba_second']['standard_spin_probability'])}, and First accepts {pct(accolades['all_nba_first']['standard_spin_probability'])}.
+- Adding 2025–26 does not by itself justify a scoring change. The 120 → +35 rule should be judged again in the upcoming three-season simulation.
 
 ## Method
 
 The canonical observation is one **Player × Team × Season** record. The report distinguishes:
 
-1. **Record-weighted distributions**, where each of the 895 rows counts equally.
+1. **Record-weighted distributions**, where each of the 1,346 rows counts equally.
 2. **Roulette-weighted distributions**, matching the game rule: equal Season → equal Team → equal eligible Player.
 
 The second view is the relevant gameplay baseline because team roster sizes vary. Scores use the GDD multipliers and round-half-up rule:
@@ -387,18 +415,15 @@ The second view is the relevant gameplay baseline because team roster sizes vary
 
 ## Season Comparison
 
-| Category | 2023–24 mean | 2024–25 mean | Change |
-|---|---:|---:|---:|
-"""
-    for field in SCORE_FIELDS:
-        first = summary["roulette_distributions_by_season"]["2023-24"][field]["mean"]
-        second = summary["roulette_distributions_by_season"]["2024-25"][field]["mean"]
-        report += f"| {SCORE_LABELS[field]} | {first:.1f} | {second:.1f} | {second-first:+.1f} |\n"
-    report += f"""
+{season_table}
 
 ![Season score comparison](../analysis/charts/season_score_comparison.png)
 
-The two seasons have similar category means. No multiplier conclusion in this report depends on a single-season anomaly.
+## Effect of Adding 2025–26
+
+{comparison_table}
+
+This comparison uses roulette weighting in both pools. It isolates whether adding the third season materially changes the distribution rather than merely adding more rows.
 
 ## Joker Categories
 
@@ -415,17 +440,17 @@ GP is the safer Joker; Jersey has the heavier upside tail. That distinction supp
 
 | Category | Eligible records | Standard-spin probability | Score |
 |---|---:|---:|---:|
-| All-NBA Third | {accolades['all_nba_third']['records']} | {pct(accolades['all_nba_third']['standard_spin_probability'])} | 20 |
-| All-NBA Second | {accolades['all_nba_second']['records']} | {pct(accolades['all_nba_second']['standard_spin_probability'])} | 30 |
+| All-NBA Third (First/Second/Third eligible) | {accolades['all_nba_third']['records']} | {pct(accolades['all_nba_third']['standard_spin_probability'])} | 20 |
+| All-NBA Second (First/Second eligible) | {accolades['all_nba_second']['records']} | {pct(accolades['all_nba_second']['standard_spin_probability'])} | 30 |
 | All-NBA First | {accolades['all_nba_first']['records']} | {pct(accolades['all_nba_first']['standard_spin_probability'])} | 40 |
 | Champion | {accolades['champion']['records']} | {pct(accolades['champion']['standard_spin_probability'])} | 25 |
-| All-Defense Second | {accolades['all_defense_second']['records']} | {pct(accolades['all_defense_second']['standard_spin_probability'])} | 30 |
+| All-Defense Second (First/Second eligible) | {accolades['all_defense_second']['records']} | {pct(accolades['all_defense_second']['standard_spin_probability'])} | 30 |
 | All-Defense First | {accolades['all_defense_first']['records']} | {pct(accolades['all_defense_first']['standard_spin_probability'])} | 40 |
 | Major Award | {accolades['major_award']['records']} | {pct(accolades['major_award']['standard_spin_probability'])} | 50 |
 
 ![Accolade probabilities](../analysis/charts/accolade_probabilities.png)
 
-Major Award and exact All-Defensive teams are the rarest targets. Their balance cannot be evaluated from raw frequency alone because team, player, and season locks are designed to increase targeted odds.
+Major Award and First-team categories remain the rarest targets. The cumulative rule makes lower-tier categories appropriately easier without changing their fixed scores.
 
 ## Observed Category Ceilings
 
@@ -442,6 +467,7 @@ Major Award and exact All-Defensive teams are the rarest targets. Their balance 
 
 - 2023–24: {summary['records_by_season']['2023-24']} eligible records.
 - 2024–25: {summary['records_by_season']['2024-25']} eligible records.
+- 2025–26: {summary['records_by_season']['2025-26']} eligible records.
 - Every season contains all 30 teams.
 - Eligible roster sizes range from {int(min(summary['eligible_records_per_team'][season]['min'] for season in SEASONS))} to {int(max(summary['eligible_records_per_team'][season]['max'] for season in SEASONS))} players per team-season.
 - The analysis contains no missing jersey values and no records below the eligibility thresholds.
@@ -450,9 +476,9 @@ Major Award and exact All-Defensive teams are the rarest targets. Their balance 
 
 1. Retain the existing statistical multipliers for the first playable prototype.
 2. Retain GP and Jersey as deliberately different Joker distributions.
-3. Retain the fixed accolade scores until lock-aware simulation estimates hunt difficulty.
-4. Keep **140 → +35** as the Upper Bonus test rule. This report identifies its likely bottlenecks but does not estimate strategic achievement rate.
-5. Run the roulette simulation before changing scoring or adding artificial rarity adjustments.
+3. Retain cumulative accolade eligibility and the fixed accolade scores.
+4. Retain **120 → +35** for the next simulation; distributions alone do not overturn the playtest and two-season simulation evidence.
+5. Rerun Random, Greedy, Strategic, and sensitivity simulations before making another balance change.
 
 ## Reproduce
 
@@ -460,7 +486,7 @@ Major Award and exact All-Defensive teams are the rarest targets. Their balance 
 python scripts/analyze_distributions.py
 ```
 
-This regenerates the JSON summary, CSV tables, charts, and this report from the two processed season datasets.
+This regenerates the JSON summary, CSV tables, charts, and this report from the three processed season datasets.
 """
     DOC.write_text(report, encoding="utf-8")
 
@@ -469,7 +495,7 @@ def write_csv_outputs(summary: dict) -> None:
     path = ANALYSIS / "category_distribution_summary.csv"
     with path.open("w", newline="", encoding="utf-8-sig") as handle:
         fields = ["category", "weighting", "min", "p10", "p25", "median", "mean", "p75", "p90", "p95", "max"]
-        writer = csv.DictWriter(handle, fieldnames=fields)
+        writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
         writer.writeheader()
         for field in RAW_METRICS + SCORE_FIELDS:
             for weighting, values in summary["distributions"][field].items():
@@ -478,7 +504,7 @@ def write_csv_outputs(summary: dict) -> None:
     path = ANALYSIS / "accolade_summary.csv"
     with path.open("w", newline="", encoding="utf-8-sig") as handle:
         fields = ["category", "eligible_records", "standard_spin_probability", *SEASONS]
-        writer = csv.DictWriter(handle, fieldnames=fields)
+        writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
         writer.writeheader()
         for category, values in summary["accolades"].items():
             writer.writerow({
@@ -490,18 +516,20 @@ def write_csv_outputs(summary: dict) -> None:
 
 
 def validate(records: list[dict], summary: dict) -> None:
-    assert len(records) == 895
-    assert Counter(row["season"] for row in records) == Counter({"2023-24": 441, "2024-25": 454})
-    assert len({(row["season"], row["team"]) for row in records}) == 60
+    assert len(records) == 1346
+    assert Counter(row["season"] for row in records) == Counter({
+        "2023-24": 441, "2024-25": 454, "2025-26": 451,
+    })
+    assert len({(row["season"], row["team"]) for row in records}) == 90
     assert len({(row["season"], row["team"], row["player_id"]) for row in records}) == len(records)
     assert all(row["gp"] >= 15 and row["mpg"] >= 10.0 for row in records)
     assert all(row["jersey"] is not None for row in records)
-    assert summary["accolades"]["all_nba_first"]["records"] == 10
-    assert summary["accolades"]["all_nba_second"]["records"] == 10
-    assert summary["accolades"]["all_nba_third"]["records"] == 10
-    assert summary["accolades"]["all_defense_first"]["records"] == 10
-    assert summary["accolades"]["all_defense_second"]["records"] == 10
-    assert summary["accolades"]["major_award"]["records"] == 6
+    assert summary["accolades"]["all_nba_first"]["records"] == 15
+    assert summary["accolades"]["all_nba_second"]["records"] == 30
+    assert summary["accolades"]["all_nba_third"]["records"] == 45
+    assert summary["accolades"]["all_defense_first"]["records"] == 15
+    assert summary["accolades"]["all_defense_second"]["records"] == 30
+    assert summary["accolades"]["major_award"]["records"] == 9
 
 
 def validate_outputs() -> None:

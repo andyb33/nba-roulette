@@ -30,7 +30,7 @@ See [`docs/DATA_README.md`](docs/DATA_README.md) for the schema, source notes,
 eligibility rules, jersey-number policy, and rebuild instructions.
 
 See [`docs/DISTRIBUTION_REPORT.md`](docs/DISTRIBUTION_REPORT.md) for the
-roulette-weighted two-season scoring, Joker, and accolade distributions.
+roulette-weighted three-season scoring, Joker, and accolade distributions.
 
 See [`docs/ENGINE.md`](docs/ENGINE.md) for roulette resolution, lock semantics,
 scoring defaults, and engine verification.
