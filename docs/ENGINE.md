@@ -11,6 +11,7 @@ testable before bots or animations are added.
 - `nba_roulette/roulette.py`: hierarchical roulette and lock resolution.
 - `nba_roulette/scoring.py`: the 14 categories and Upper Bonus.
 - `nba_roulette/game.py`: spins, rerolls, category consumption, and game totals.
+- `nba_roulette/simulation.py`: reusable full-game policies and summaries.
 
 ## Roulette Resolution
 
@@ -66,3 +67,16 @@ The audit uses a fixed seed and writes `analysis/engine_verification.json`.
 It checks standard season/team weighting, player weighting inside a locked
 team-season, traded-player hierarchical weighting, and validity under every
 rerollable lock mask.
+
+## Simulation baselines
+
+Run the reproducible Random and Greedy full-game baselines:
+
+```bash
+python scripts/simulate_baselines.py
+```
+
+The command writes `analysis/baseline_simulation.json`,
+`analysis/baseline_category_summary.csv`, and
+`docs/BASELINE_SIMULATION.md`. Neither baseline uses locks; this cleanly
+separates calibration from the later strategic lock-aware policy.

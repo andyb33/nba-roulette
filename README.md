@@ -35,6 +35,9 @@ roulette-weighted two-season scoring, Joker, and accolade distributions.
 See [`docs/ENGINE.md`](docs/ENGINE.md) for roulette resolution, lock semantics,
 scoring defaults, and engine verification.
 
+See [`docs/BASELINE_SIMULATION.md`](docs/BASELINE_SIMULATION.md) for the
+Random and Greedy full-game simulation baselines.
+
 ## Rebuild a dataset
 
 ```bash
@@ -53,6 +56,12 @@ python scripts/analyze_distributions.py
 ```bash
 python -m unittest discover -v
 python scripts/verify_engine.py
+```
+
+## Run the baseline simulations
+
+```bash
+python scripts/simulate_baselines.py
 ```
 
 ## Game design snapshot
