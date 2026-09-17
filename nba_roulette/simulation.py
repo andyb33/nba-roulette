@@ -8,7 +8,7 @@ from functools import lru_cache
 from statistics import mean
 
 from .game import GameState, MAX_SPINS_PER_TURN
-from .models import PlayerTeamSeason
+from .models import Lock, PlayerTeamSeason
 from .roulette import RouletteEngine
 from .scoring import Category, category_score
 
@@ -19,6 +19,13 @@ class SimulatedGame:
     bonus: int
     spins_used: int
     scorecard: dict[Category, int]
+    lock_counts: dict[str, int]
+
+
+@dataclass(frozen=True, slots=True)
+class SimulatedTurn:
+    spins_used: int
+    lock_counts: dict[str, int]
 
 
 class RandomPolicy:
@@ -26,7 +33,7 @@ class RandomPolicy:
 
     name = "random"
 
-    def play_turn(self, game: GameState, rng: random.Random) -> int:
+    def play_turn(self, game: GameState, rng: random.Random) -> SimulatedTurn:
         game.start_turn()
         target_spins = rng.randint(1, MAX_SPINS_PER_TURN)
         while game.turn is not None and game.turn.spins_used < target_spins:
@@ -34,7 +41,7 @@ class RandomPolicy:
         category = rng.choice(game.open_categories)
         spins_used = game.turn.spins_used
         game.score(category)
-        return spins_used
+        return SimulatedTurn(spins_used, {})
 
 
 class GreedyPolicy:
@@ -57,7 +64,7 @@ class GreedyPolicy:
             for record, weight in self.weighted_records
         )
 
-    def play_turn(self, game: GameState, rng: random.Random) -> int:
+    def play_turn(self, game: GameState, rng: random.Random) -> SimulatedTurn:
         del rng  # Roulette randomness lives in the engine; tie-breaking is stable.
         game.start_turn()
         open_categories = game.open_categories
@@ -71,9 +78,158 @@ class GreedyPolicy:
             ):
                 spins_used = game.turn.spins_used
                 game.score(best_category)
-                return spins_used
+                return SimulatedTurn(spins_used, {})
             game.reroll()
         raise AssertionError("Turn unexpectedly ended without scoring")
+
+
+class StrategicPolicy:
+    """A transparent lock-aware heuristic with category opportunity costs.
+
+    This is not an optimal solver. It compares each result with the expected
+    replacement value of every open category, gives upper-section selections a
+    share of the possible bonus, and evaluates every legal lock mask using the
+    roulette's exact hierarchical outcome probabilities.
+    """
+
+    name = "strategic"
+    lock_options = (
+        frozenset(),
+        frozenset({Lock.SEASON}),
+        frozenset({Lock.TEAM}),
+        frozenset({Lock.PLAYER}),
+        frozenset({Lock.SEASON, Lock.TEAM}),
+        frozenset({Lock.SEASON, Lock.PLAYER}),
+        frozenset({Lock.TEAM, Lock.PLAYER}),
+    )
+    upper_targets = {
+        Category.POINTS: 40,
+        Category.REBOUNDS: 30,
+        Category.ASSISTS: 30,
+        Category.STEALS: 20,
+        Category.BLOCKS: 20,
+    }
+
+    def __init__(self, records: tuple[PlayerTeamSeason, ...]) -> None:
+        self.records = records
+        self.standard_weights = _standard_spin_weights(records)
+        self.replacement_values = {
+            category: sum(
+                weight * category_score(record, category)
+                for record, weight in self.standard_weights
+            )
+            for category in Category
+        }
+        self._scores = {
+            (record.season, record.team, record.player_id): {
+                category: category_score(record, category) for category in Category
+            }
+            for record in records
+        }
+        self._outcome_cache: dict[
+            tuple[str, str, int, frozenset[Lock]],
+            tuple[tuple[PlayerTeamSeason, float], ...],
+        ] = {}
+        self._expectation_cache: dict[
+            tuple[str, str, int, frozenset[Lock], tuple[Category, ...]], float
+        ] = {}
+        self._best_choice_cache: dict[
+            tuple[str, str, int, tuple[Category, ...]], tuple[Category, float]
+        ] = {}
+
+    def _category_utility(
+        self,
+        record: PlayerTeamSeason,
+        category: Category,
+    ) -> float:
+        score = self._scores[(record.season, record.team, record.player_id)][category]
+        utility = score - self.replacement_values[category]
+        target = self.upper_targets.get(category)
+        if target is not None:
+            # One fifth of the +35 bonus, scaled by progress toward that slot's
+            # conceptual 20/10/10/2/2 target and capped to avoid dominating.
+            utility += 7 * min(score / target, 1.25)
+        return utility
+
+    def _best_choice(
+        self,
+        record: PlayerTeamSeason,
+        open_categories: tuple[Category, ...],
+    ) -> tuple[Category, float]:
+        key = (record.season, record.team, record.player_id, open_categories)
+        if key not in self._best_choice_cache:
+            category = max(
+                open_categories,
+                key=lambda item: self._category_utility(record, item),
+            )
+            self._best_choice_cache[key] = (
+                category, self._category_utility(record, category)
+            )
+        return self._best_choice_cache[key]
+
+    def _weighted_outcomes(
+        self,
+        current: PlayerTeamSeason,
+        locks: frozenset[Lock],
+    ) -> tuple[tuple[PlayerTeamSeason, float], ...]:
+        key = (current.season, current.team, current.player_id, locks)
+        if key not in self._outcome_cache:
+            candidates = tuple(
+                record for record in self.records
+                if (Lock.SEASON not in locks or record.season == current.season)
+                and (Lock.TEAM not in locks or record.team == current.team)
+                and (Lock.PLAYER not in locks or record.player_id == current.player_id)
+            )
+            self._outcome_cache[key] = _hierarchical_weights(candidates, locks)
+        return self._outcome_cache[key]
+
+    def _expected_utility(
+        self,
+        current: PlayerTeamSeason,
+        locks: frozenset[Lock],
+        open_categories: tuple[Category, ...],
+    ) -> float:
+        key = (current.season, current.team, current.player_id, locks, open_categories)
+        if key not in self._expectation_cache:
+            self._expectation_cache[key] = sum(
+                weight * self._best_choice(record, open_categories)[1]
+                for record, weight in self._weighted_outcomes(current, locks)
+            )
+        return self._expectation_cache[key]
+
+    def play_turn(self, game: GameState, rng: random.Random) -> SimulatedTurn:
+        del rng
+        game.start_turn()
+        used_locks: dict[str, int] = {}
+        while game.turn is not None:
+            open_categories = game.open_categories
+            best_category, current_utility = self._best_choice(
+                game.turn.current, open_categories
+            )
+            if game.turn.spins_used == MAX_SPINS_PER_TURN:
+                spins_used = game.turn.spins_used
+                game.score(best_category)
+                return SimulatedTurn(spins_used, used_locks)
+
+            expected = [
+                (self._expected_utility(game.turn.current, locks, open_categories), locks)
+                for locks in self.lock_options
+            ]
+            best_expected, best_locks = max(
+                expected,
+                key=lambda item: (item[0], -len(item[1]), _lock_name(item[1])),
+            )
+            if current_utility >= best_expected:
+                spins_used = game.turn.spins_used
+                game.score(best_category)
+                return SimulatedTurn(spins_used, used_locks)
+            used_locks[_lock_name(best_locks)] = used_locks.get(_lock_name(best_locks), 0) + 1
+            game.reroll(best_locks)
+        raise AssertionError("Turn unexpectedly ended without scoring")
+
+
+def _lock_name(locks: frozenset[Lock]) -> str:
+    return "+".join(lock.value for lock in Lock if lock in locks) or "none"
 
 
 def _standard_spin_weights(
@@ -104,22 +260,61 @@ def _standard_spin_weights(
     return tuple(weighted)
 
 
+def _hierarchical_weights(
+    records: tuple[PlayerTeamSeason, ...],
+    locks: frozenset[Lock],
+) -> tuple[tuple[PlayerTeamSeason, float], ...]:
+    if not records:
+        raise ValueError("Cannot weight an empty outcome pool")
+    seasons = sorted({record.season for record in records})
+    teams_by_season = {
+        season: sorted({record.team for record in records if record.season == season})
+        for season in seasons
+    }
+    player_counts = {
+        (season, team): sum(
+            record.season == season and record.team == team for record in records
+        )
+        for season in seasons
+        for team in teams_by_season[season]
+    }
+    weighted = []
+    for record in records:
+        season_weight = 1.0 if Lock.SEASON in locks else 1 / len(seasons)
+        team_weight = (
+            1.0 if Lock.TEAM in locks else 1 / len(teams_by_season[record.season])
+        )
+        player_weight = (
+            1.0 if Lock.PLAYER in locks
+            else 1 / player_counts[(record.season, record.team)]
+        )
+        weighted.append((record, season_weight * team_weight * player_weight))
+    if abs(sum(weight for _, weight in weighted) - 1.0) > 1e-12:
+        raise ValueError("Locked outcome weights do not sum to one")
+    return tuple(weighted)
+
+
 def simulate_game(
     records: tuple[PlayerTeamSeason, ...],
-    policy: RandomPolicy | GreedyPolicy,
+    policy: RandomPolicy | GreedyPolicy | StrategicPolicy,
     seed: int,
 ) -> SimulatedGame:
     roulette_rng = random.Random(seed)
     policy_rng = random.Random(seed ^ 0x9E3779B9)
     game = GameState(RouletteEngine(records, roulette_rng))
     spins_used = 0
+    lock_counts: dict[str, int] = {}
     while not game.is_complete:
-        spins_used += policy.play_turn(game, policy_rng)
+        turn = policy.play_turn(game, policy_rng)
+        spins_used += turn.spins_used
+        for lock_name, count in turn.lock_counts.items():
+            lock_counts[lock_name] = lock_counts.get(lock_name, 0) + count
     return SimulatedGame(
         total_score=game.total_score,
         bonus=game.bonus,
         spins_used=spins_used,
         scorecard=dict(game.scorecard),
+        lock_counts=lock_counts,
     )
 
 
@@ -148,6 +343,10 @@ def summarize_games(games: list[SimulatedGame]) -> dict:
         "upper_bonus_rate": mean(game.bonus > 0 for game in games),
         "average_spins_per_game": mean(game.spins_used for game in games),
         "average_spins_per_turn": mean(game.spins_used for game in games) / len(Category),
+        "average_lock_uses_per_game": {
+            lock_name: mean(game.lock_counts.get(lock_name, 0) for game in games)
+            for lock_name in sorted({name for game in games for name in game.lock_counts})
+        },
         "categories": {
             category.value: {
                 "mean": mean(game.scorecard[category] for game in games),

@@ -6,7 +6,9 @@ import unittest
 from nba_roulette.game import GameState
 from nba_roulette.roulette import RouletteEngine
 from nba_roulette.scoring import Category
-from nba_roulette.simulation import GreedyPolicy, RandomPolicy, simulate_game, summarize_games
+from nba_roulette.simulation import (
+    GreedyPolicy, RandomPolicy, StrategicPolicy, simulate_game, summarize_games,
+)
 
 from .test_roulette import pool
 
@@ -25,6 +27,18 @@ class SimulationTests(unittest.TestCase):
         self.assertEqual(set(result.scorecard), set(Category))
         self.assertGreaterEqual(result.spins_used, 14)
         self.assertLessEqual(result.spins_used, 42)
+
+    def test_strategic_policy_completes_game_and_uses_legal_locks(self) -> None:
+        records = pool()
+        result = simulate_game(records, StrategicPolicy(records), 789)
+        self.assertEqual(set(result.scorecard), set(Category))
+        self.assertGreaterEqual(result.spins_used, 14)
+        self.assertLessEqual(result.spins_used, 42)
+        legal = {
+            "none", "season", "team", "player", "season+team",
+            "season+player", "team+player",
+        }
+        self.assertTrue(set(result.lock_counts).issubset(legal))
 
     def test_greedy_threshold_is_stable(self) -> None:
         records = pool()

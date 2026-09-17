@@ -38,6 +38,9 @@ scoring defaults, and engine verification.
 See [`docs/BASELINE_SIMULATION.md`](docs/BASELINE_SIMULATION.md) for the
 Random and Greedy full-game simulation baselines.
 
+See [`docs/STRATEGIC_SIMULATION.md`](docs/STRATEGIC_SIMULATION.md) for the
+lock-aware heuristic comparison.
+
 ## Rebuild a dataset
 
 ```bash
@@ -62,6 +65,7 @@ python scripts/verify_engine.py
 
 ```bash
 python scripts/simulate_baselines.py
+python scripts/simulate_strategic.py
 ```
 
 ## Game design snapshot

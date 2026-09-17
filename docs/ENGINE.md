@@ -80,3 +80,14 @@ The command writes `analysis/baseline_simulation.json`,
 `analysis/baseline_category_summary.csv`, and
 `docs/BASELINE_SIMULATION.md`. Neither baseline uses locks; this cleanly
 separates calibration from the later strategic lock-aware policy.
+
+Run the lock-aware heuristic comparison:
+
+```bash
+python scripts/simulate_strategic.py
+```
+
+The Strategic policy evaluates all seven rerollable lock masks using exact
+hierarchical outcome probabilities. Its category heuristic uses replacement
+value and limited Upper Bonus equity. It is a transparent benchmark for
+sensitivity testing, not an optimal-play solver.
