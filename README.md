@@ -5,9 +5,9 @@ player-team-season statistics, accolades, games played, and jersey numbers.
 
 ## Current status
 
-The 2023–24 and 2024–25 datasets are complete:
+The 2023–24, 2024–25, and 2025–26 datasets are complete:
 
-- 895 eligible player-team records across the two seasons and all 30 NBA teams;
+- 1,346 eligible player-team records across the three seasons and all 30 NBA teams;
 - eligibility of at least 15 games and 10.0 minutes per game for that team;
 - team-specific statistics for traded players;
 - final jersey number for each team stint;
@@ -54,6 +54,8 @@ accolade rule and terminology changes made after the first human playtest.
 ```bash
 python scripts/build_dataset.py --season 2023-24
 python scripts/build_dataset.py --season 2024-25
+python scripts/build_boxscore_dataset.py --season 2025-26 \
+  --boxscores data/raw/2025-26/player_boxscores_2026.csv
 ```
 
 ## Rebuild the distribution report

@@ -31,5 +31,19 @@ SEASON_CONFIGS = {
         "roy": "Stephon Castle",
         "champion": "OKC",
     },
+    "2025-26": {
+        "all_nba": {
+            1: {"Cade Cunningham", "Luka Dončić", "Shai Gilgeous-Alexander", "Nikola Jokić", "Victor Wembanyama"},
+            2: {"Jaylen Brown", "Jalen Brunson", "Kevin Durant", "Kawhi Leonard", "Donovan Mitchell"},
+            3: {"Tyrese Maxey", "Jamal Murray", "Jalen Johnson", "Chet Holmgren", "Jalen Duren"},
+        },
+        "all_defense": {
+            1: {"Victor Wembanyama", "Chet Holmgren", "Ausar Thompson", "Rudy Gobert", "Derrick White"},
+            2: {"Scottie Barnes", "Cason Wallace", "Bam Adebayo", "OG Anunoby", "Dyson Daniels"},
+        },
+        "mvp": "Shai Gilgeous-Alexander",
+        "dpoy": "Victor Wembanyama",
+        "roy": "Cooper Flagg",
+        "champion": "NYK",
+    },
 }
-

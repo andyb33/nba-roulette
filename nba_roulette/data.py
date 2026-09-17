@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parent.parent
 
 
 def load_records(
-    seasons: Iterable[str] = ("2023-24", "2024-25"),
+    seasons: Iterable[str] = ("2023-24", "2024-25", "2025-26"),
     data_dir: Path | None = None,
 ) -> tuple[PlayerTeamSeason, ...]:
     directory = data_dir or ROOT / "data" / "game"
