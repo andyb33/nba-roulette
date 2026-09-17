@@ -99,7 +99,7 @@ python scripts/run_web.py
 Then open `http://127.0.0.1:8000`. The prototype uses only the Python standard
 library and the existing game engine; no additional packages are required.
 See [`docs/WEB_PROTOTYPE.md`](docs/WEB_PROTOTYPE.md) for the included features,
-architecture, and deliberate limitations.
+architecture, v0.2 playtest-driven interface changes, and deliberate limitations.
 
 ## Game design snapshot
 

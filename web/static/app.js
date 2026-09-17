@@ -17,11 +17,20 @@ async function request(path, body = null) {
 
 function categoryRow(category) {
   const score = category.used ? category.score : category.preview;
+  const qualifies = category.section === "Accolades" && !category.used && (category.preview ?? 0) > 0;
+  const elite = !category.used && category.glow_threshold && (category.preview ?? 0) >= category.glow_threshold;
+  const scoredHighlight = category.used && (
+    (category.section === "Accolades" && category.score > 0) ||
+    (category.glow_threshold && category.score >= category.glow_threshold)
+  );
   const detail = category.used && category.selection
     ? `${category.selection.player} · ${category.selection.season} ${category.selection.team}`
     : category.preview !== null ? "Score this player" : "Spin to preview";
-  return `<button class="category ${category.used ? "used" : ""}" data-category="${category.id}" ${category.used || category.preview === null ? "disabled" : ""}>
-    <span><strong>${category.label}</strong><small>${detail}</small></span>
+  const valueLabel = category.formula || (category.fixed_value ? `${category.fixed_value} pts` : "");
+  const icon = category.icon ? `<i class="category-icon" aria-hidden="true">${category.icon}</i>` : "";
+  const classes = [category.used && "used", qualifies && "qualified", elite && "elite", scoredHighlight && "scored-highlight"].filter(Boolean).join(" ");
+  return `<button class="category ${classes}" data-category="${category.id}" ${category.used || category.preview === null ? "disabled" : ""}>
+    ${icon}<span class="category-copy"><strong>${category.label} <em>${valueLabel}</em></strong><small>${detail}</small></span>
     <b>${score ?? "—"}</b>
   </button>`;
 }
@@ -45,9 +54,13 @@ function render(game) {
     $("#player-context").textContent = `${player.season} · ${player.team}`;
     $("#player-name").textContent = player.name;
     $("#jersey").textContent = `#${player.jersey}`;
+    $("#jersey").style.setProperty("--team-primary", player.team_colors.primary);
+    $("#jersey").style.setProperty("--team-secondary", player.team_colors.secondary);
     $("#stats").innerHTML = Object.entries(player.stats)
       .map(([label, value]) => `<div><strong>${value}</strong><span>${label}</span></div>`).join("");
-    $("#awards").textContent = player.awards.length ? player.awards.join(" · ") : "No qualifying accolades";
+    $("#awards").innerHTML = player.awards.length
+      ? player.awards.map(award => `<div class="award-badge"><span>${award.icon}</span><strong>${award.label}</strong></div>`).join("")
+      : `<p class="no-awards">No qualifying accolades</p>`;
   }
 
   const grouped = game.categories.reduce((groups, item) => {

@@ -28,6 +28,47 @@ CATEGORY_LABELS = {
     Category.JERSEY: "Jersey Number",
 }
 
+CATEGORY_META = {
+    Category.POINTS: {"formula": "×2", "glow_threshold": 40},
+    Category.REBOUNDS: {"formula": "×3", "glow_threshold": 30},
+    Category.ASSISTS: {"formula": "×3", "glow_threshold": 30},
+    Category.STEALS: {"formula": "×10", "glow_threshold": 20},
+    Category.BLOCKS: {"formula": "×10", "glow_threshold": 20},
+    Category.GAMES_PLAYED: {"formula": "×1", "glow_threshold": 80},
+    Category.ALL_NBA_THIRD: {"fixed_value": 20, "icon": "🥉"},
+    Category.ALL_NBA_SECOND: {"fixed_value": 30, "icon": "🥈"},
+    Category.ALL_NBA_FIRST: {"fixed_value": 40, "icon": "🥇"},
+    Category.CHAMPION: {"fixed_value": 25, "icon": "🏆"},
+    Category.ALL_DEFENSE_SECOND: {"fixed_value": 30, "icon": "🛡️"},
+    Category.ALL_DEFENSE_FIRST: {"fixed_value": 40, "icon": "🛡️"},
+    Category.MAJOR_AWARD: {"fixed_value": 50, "icon": "⭐"},
+    Category.JERSEY: {"formula": "×1", "glow_threshold": 70},
+}
+
+TEAM_COLORS = {
+    "ATL": ("#E03A3E", "#C1D32F"), "BOS": ("#007A33", "#BA9653"),
+    "BKN": ("#000000", "#FFFFFF"), "CHA": ("#1D1160", "#00788C"),
+    "CHI": ("#CE1141", "#000000"), "CLE": ("#860038", "#FDBB30"),
+    "DAL": ("#00538C", "#B8C4CA"), "DEN": ("#0E2240", "#FEC524"),
+    "DET": ("#C8102E", "#1D42BA"), "GSW": ("#1D428A", "#FFC72C"),
+    "HOU": ("#CE1141", "#000000"), "IND": ("#002D62", "#FDBB30"),
+    "LAC": ("#C8102E", "#1D428A"), "LAL": ("#552583", "#FDB927"),
+    "MEM": ("#5D76A9", "#12173F"), "MIA": ("#98002E", "#F9A01B"),
+    "MIL": ("#00471B", "#EEE1C6"), "MIN": ("#0C2340", "#78BE20"),
+    "NOP": ("#0C2340", "#C8102E"), "NYK": ("#006BB6", "#F58426"),
+    "OKC": ("#007AC1", "#EF3B24"), "ORL": ("#0077C0", "#C4CED4"),
+    "PHI": ("#006BB6", "#ED174C"), "PHX": ("#1D1160", "#E56020"),
+    "POR": ("#E03A3E", "#000000"), "SAC": ("#5A2D81", "#63727A"),
+    "SAS": ("#C4CED4", "#000000"), "TOR": ("#CE1141", "#000000"),
+    "UTA": ("#002B5C", "#6CACE4"), "WAS": ("#002B5C", "#E31837"),
+}
+
+AWARD_META = {
+    "Champion": "🏆", "MVP": "⭐", "DPOY": "🛡️", "ROTY": "🌟",
+    "All-NBA First": "🥇", "All-NBA Second": "🥈", "All-NBA Third": "🥉",
+    "All-Defense First": "🛡️", "All-Defense Second": "🛡️",
+}
+
 
 @dataclass(slots=True)
 class BrowserGame:
@@ -97,6 +138,7 @@ class BrowserGame:
                     "score": scored.get(category.value, {}).get("score"),
                     "preview": preview.get(category),
                     "selection": scored.get(category.value),
+                    **CATEGORY_META[category],
                 }
                 for category in Category
             ],
@@ -112,25 +154,29 @@ class BrowserGame:
 
     @staticmethod
     def _player(record: PlayerTeamSeason) -> dict:
-        awards = []
+        awards: list[dict[str, str]] = []
         if record.all_nba:
-            awards.append(f"All-NBA {record.all_nba}")
+            label = {1: "All-NBA First", 2: "All-NBA Second", 3: "All-NBA Third"}[record.all_nba]
+            awards.append({"label": label, "icon": AWARD_META[label]})
         if record.all_defense:
-            awards.append(f"All-Defense {record.all_defense}")
+            label = {1: "All-Defense First", 2: "All-Defense Second"}[record.all_defense]
+            awards.append({"label": label, "icon": AWARD_META[label]})
         if record.champion:
-            awards.append("Champion")
+            awards.append({"label": "Champion", "icon": AWARD_META["Champion"]})
         if record.mvp:
-            awards.append("MVP")
+            awards.append({"label": "MVP", "icon": AWARD_META["MVP"]})
         if record.dpoy:
-            awards.append("DPOY")
+            awards.append({"label": "DPOY", "icon": AWARD_META["DPOY"]})
         if record.roy:
-            awards.append("ROTY")
+            awards.append({"label": "ROTY", "icon": AWARD_META["ROTY"]})
+        primary, secondary = TEAM_COLORS.get(record.team, ("#4D7CFF", "#FFFFFF"))
         return {
             "season": record.season,
             "team": record.team,
             "player_id": record.player_id,
             "name": record.player,
             "jersey": record.jersey,
+            "team_colors": {"primary": primary, "secondary": secondary},
             "stats": {
                 "PPG": record.ppg,
                 "RPG": record.rpg,

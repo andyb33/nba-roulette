@@ -26,6 +26,23 @@ standard library and the existing NBA Roulette package.
 - Final score dialog and New Game flow.
 - Responsive desktop and mobile layouts.
 
+## Prototype v0.2 — Playtest-driven interface
+
+Human Playtests 2–6 produced the following interface changes:
+
+- Desktop scorecard moved to the left, with roulette and player information on
+  the right; mobile keeps the action-first single-column flow.
+- Statistical and Joker formulas are always visible on the scorecard.
+- Accolade rows show their emoji and fixed point value.
+- Any currently qualifying accolade receives a gold animated glow.
+- Elite score previews receive a green glow at PTS 40+, REB 30+, AST 30+,
+  STL 20+, BLK 20+, GP 80+, and Jersey 70+.
+- Previously scored elite/qualifying outcomes retain a small marker without
+  continuing to pulse.
+- Jersey number is presented in a jersey silhouette using team colors.
+- Player accolades appear as vertical icon badges.
+- Reduced-motion preferences disable the pulsing animations.
+
 ## Architecture
 
 The browser sends commands to a small JSON server. `BrowserGame` serializes the
