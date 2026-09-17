@@ -39,6 +39,26 @@ class SimulationTests(unittest.TestCase):
             "season+player", "team+player",
         }
         self.assertTrue(set(result.lock_counts).issubset(legal))
+        self.assertEqual(
+            result.upper_score,
+            sum(result.scorecard[category] for category in (
+                Category.POINTS, Category.REBOUNDS, Category.ASSISTS,
+                Category.STEALS, Category.BLOCKS,
+            )),
+        )
+
+    def test_strategic_policy_rejects_negative_bonus_equity(self) -> None:
+        with self.assertRaises(ValueError):
+            StrategicPolicy(pool(), bonus_equity_per_category=-1)
+
+    def test_gap_aware_bonus_mode_completes_game(self) -> None:
+        records = pool()
+        result = simulate_game(
+            records,
+            StrategicPolicy(records, bonus_equity_per_category=14, gap_aware_bonus=True),
+            790,
+        )
+        self.assertEqual(set(result.scorecard), set(Category))
 
     def test_greedy_threshold_is_stable(self) -> None:
         records = pool()

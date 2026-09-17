@@ -1,0 +1,399 @@
+{
+  "seed": 20260919,
+  "games_per_profile": 1000,
+  "dataset_records": 895,
+  "profiles": {
+    "neutral": {
+      "bonus_equity_per_category": 0.0,
+      "result": {
+        "games": 1000,
+        "total_score": {
+          "mean": 319.747,
+          "p10": 254.0,
+          "median": 318.0,
+          "p90": 388.0,
+          "min": 184,
+          "max": 461
+        },
+        "upper_bonus_rate": 0.032,
+        "upper_score": {
+          "mean": 110.666,
+          "p10": 93.0,
+          "median": 110.0,
+          "p90": 129.0,
+          "threshold_rates": {
+            "120": 0.258,
+            "130": 0.097,
+            "135": 0.053,
+            "140": 0.032,
+            "145": 0.013,
+            "150": 0.006
+          }
+        },
+        "average_spins_per_game": 35.273,
+        "average_spins_per_turn": 2.5195000000000003,
+        "average_lock_uses_per_game": {
+          "none": 4.126,
+          "player": 2.516,
+          "season": 5.867,
+          "season+player": 0.125,
+          "season+team": 5.679,
+          "team": 2.802,
+          "team+player": 0.158
+        },
+        "categories": {
+          "points": {
+            "mean": 43.309,
+            "zero_rate": 0
+          },
+          "rebounds": {
+            "mean": 25.404,
+            "zero_rate": 0
+          },
+          "assists": {
+            "mean": 17.101,
+            "zero_rate": 0
+          },
+          "steals": {
+            "mean": 12.64,
+            "zero_rate": 0
+          },
+          "blocks": {
+            "mean": 12.212,
+            "zero_rate": 0
+          },
+          "games_played": {
+            "mean": 76.226,
+            "zero_rate": 0
+          },
+          "all_nba_third": {
+            "mean": 1.84,
+            "zero_rate": 0.908
+          },
+          "all_nba_second": {
+            "mean": 7.11,
+            "zero_rate": 0.763
+          },
+          "all_nba_first": {
+            "mean": 16.6,
+            "zero_rate": 0.585
+          },
+          "champion": {
+            "mean": 14.375,
+            "zero_rate": 0.425
+          },
+          "all_defense_second": {
+            "mean": 12.06,
+            "zero_rate": 0.598
+          },
+          "all_defense_first": {
+            "mean": 16.4,
+            "zero_rate": 0.59
+          },
+          "major_award": {
+            "mean": 18.05,
+            "zero_rate": 0.639
+          },
+          "jersey": {
+            "mean": 45.3,
+            "zero_rate": 0
+          }
+        }
+      }
+    },
+    "balanced": {
+      "bonus_equity_per_category": 7.0,
+      "result": {
+        "games": 1000,
+        "total_score": {
+          "mean": 315.331,
+          "p10": 249.9,
+          "median": 312.0,
+          "p90": 387.0,
+          "min": 189,
+          "max": 539
+        },
+        "upper_bonus_rate": 0.023,
+        "upper_score": {
+          "mean": 107.809,
+          "p10": 89.0,
+          "median": 107.0,
+          "p90": 128.0,
+          "threshold_rates": {
+            "120": 0.207,
+            "130": 0.089,
+            "135": 0.041,
+            "140": 0.023,
+            "145": 0.013,
+            "150": 0.007
+          }
+        },
+        "average_spins_per_game": 35.31,
+        "average_spins_per_turn": 2.5221428571428572,
+        "average_lock_uses_per_game": {
+          "none": 4.103,
+          "player": 2.541,
+          "season": 5.893,
+          "season+player": 0.142,
+          "season+team": 5.624,
+          "team": 2.85,
+          "team+player": 0.157
+        },
+        "categories": {
+          "points": {
+            "mean": 42.867,
+            "zero_rate": 0
+          },
+          "rebounds": {
+            "mean": 24.392,
+            "zero_rate": 0
+          },
+          "assists": {
+            "mean": 17.254,
+            "zero_rate": 0
+          },
+          "steals": {
+            "mean": 11.748,
+            "zero_rate": 0
+          },
+          "blocks": {
+            "mean": 11.548,
+            "zero_rate": 0
+          },
+          "games_played": {
+            "mean": 76.576,
+            "zero_rate": 0
+          },
+          "all_nba_third": {
+            "mean": 1.68,
+            "zero_rate": 0.916
+          },
+          "all_nba_second": {
+            "mean": 6.12,
+            "zero_rate": 0.796
+          },
+          "all_nba_first": {
+            "mean": 15.76,
+            "zero_rate": 0.606
+          },
+          "champion": {
+            "mean": 14.25,
+            "zero_rate": 0.43
+          },
+          "all_defense_second": {
+            "mean": 11.55,
+            "zero_rate": 0.615
+          },
+          "all_defense_first": {
+            "mean": 17,
+            "zero_rate": 0.575
+          },
+          "major_award": {
+            "mean": 16.9,
+            "zero_rate": 0.662
+          },
+          "jersey": {
+            "mean": 46.881,
+            "zero_rate": 0
+          }
+        }
+      }
+    },
+    "aggressive": {
+      "bonus_equity_per_category": 14.0,
+      "result": {
+        "games": 1000,
+        "total_score": {
+          "mean": 314.043,
+          "p10": 250.9,
+          "median": 311.0,
+          "p90": 382.0,
+          "min": 196,
+          "max": 497
+        },
+        "upper_bonus_rate": 0.03,
+        "upper_score": {
+          "mean": 107.422,
+          "p10": 87.9,
+          "median": 107.0,
+          "p90": 129.0,
+          "threshold_rates": {
+            "120": 0.209,
+            "130": 0.09,
+            "135": 0.055,
+            "140": 0.03,
+            "145": 0.022,
+            "150": 0.009
+          }
+        },
+        "average_spins_per_game": 35.149,
+        "average_spins_per_turn": 2.5106428571428574,
+        "average_lock_uses_per_game": {
+          "none": 4.121,
+          "player": 2.539,
+          "season": 5.711,
+          "season+player": 0.138,
+          "season+team": 5.679,
+          "team": 2.775,
+          "team+player": 0.186
+        },
+        "categories": {
+          "points": {
+            "mean": 41.684,
+            "zero_rate": 0
+          },
+          "rebounds": {
+            "mean": 24.284,
+            "zero_rate": 0
+          },
+          "assists": {
+            "mean": 17.334,
+            "zero_rate": 0
+          },
+          "steals": {
+            "mean": 11.828,
+            "zero_rate": 0
+          },
+          "blocks": {
+            "mean": 12.292,
+            "zero_rate": 0
+          },
+          "games_played": {
+            "mean": 76.835,
+            "zero_rate": 0
+          },
+          "all_nba_third": {
+            "mean": 1.86,
+            "zero_rate": 0.907
+          },
+          "all_nba_second": {
+            "mean": 6.72,
+            "zero_rate": 0.776
+          },
+          "all_nba_first": {
+            "mean": 15.04,
+            "zero_rate": 0.624
+          },
+          "champion": {
+            "mean": 13.75,
+            "zero_rate": 0.45
+          },
+          "all_defense_second": {
+            "mean": 10.56,
+            "zero_rate": 0.648
+          },
+          "all_defense_first": {
+            "mean": 16.6,
+            "zero_rate": 0.585
+          },
+          "major_award": {
+            "mean": 16.45,
+            "zero_rate": 0.671
+          },
+          "jersey": {
+            "mean": 47.756,
+            "zero_rate": 0
+          }
+        }
+      }
+    },
+    "very_aggressive": {
+      "bonus_equity_per_category": 28.0,
+      "result": {
+        "games": 1000,
+        "total_score": {
+          "mean": 309.219,
+          "p10": 244.0,
+          "median": 305.0,
+          "p90": 376.1,
+          "min": 176,
+          "max": 474
+        },
+        "upper_bonus_rate": 0.028,
+        "upper_score": {
+          "mean": 105.561,
+          "p10": 84.0,
+          "median": 105.0,
+          "p90": 128.0,
+          "threshold_rates": {
+            "120": 0.201,
+            "130": 0.087,
+            "135": 0.05,
+            "140": 0.028,
+            "145": 0.014,
+            "150": 0.006
+          }
+        },
+        "average_spins_per_game": 35.136,
+        "average_spins_per_turn": 2.509714285714286,
+        "average_lock_uses_per_game": {
+          "none": 4.008,
+          "player": 2.608,
+          "season": 5.668,
+          "season+player": 0.157,
+          "season+team": 5.747,
+          "team": 2.799,
+          "team+player": 0.149
+        },
+        "categories": {
+          "points": {
+            "mean": 39.04,
+            "zero_rate": 0
+          },
+          "rebounds": {
+            "mean": 24.104,
+            "zero_rate": 0
+          },
+          "assists": {
+            "mean": 17.677,
+            "zero_rate": 0
+          },
+          "steals": {
+            "mean": 11.828,
+            "zero_rate": 0
+          },
+          "blocks": {
+            "mean": 12.912,
+            "zero_rate": 0
+          },
+          "games_played": {
+            "mean": 76.395,
+            "zero_rate": 0
+          },
+          "all_nba_third": {
+            "mean": 2.1,
+            "zero_rate": 0.895
+          },
+          "all_nba_second": {
+            "mean": 5.7,
+            "zero_rate": 0.81
+          },
+          "all_nba_first": {
+            "mean": 14.88,
+            "zero_rate": 0.628
+          },
+          "champion": {
+            "mean": 13.225,
+            "zero_rate": 0.471
+          },
+          "all_defense_second": {
+            "mean": 9.12,
+            "zero_rate": 0.696
+          },
+          "all_defense_first": {
+            "mean": 16.44,
+            "zero_rate": 0.589
+          },
+          "major_award": {
+            "mean": 14.7,
+            "zero_rate": 0.706
+          },
+          "jersey": {
+            "mean": 50.118,
+            "zero_rate": 0
+          }
+        }
+      }
+    }
+  }
+}

@@ -91,3 +91,8 @@ The Strategic policy evaluates all seven rerollable lock masks using exact
 hierarchical outcome probabilities. Its category heuristic uses replacement
 value and limited Upper Bonus equity. It is a transparent benchmark for
 sensitivity testing, not an optimal-play solver.
+
+`scripts/simulate_bonus_sensitivity.py` reruns the lock-aware policy with
+neutral, balanced, aggressive, and very aggressive Upper Bonus preferences.
+It records actual upper-section totals and threshold attainment without
+changing the game's real scores.

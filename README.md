@@ -66,6 +66,7 @@ python scripts/verify_engine.py
 ```bash
 python scripts/simulate_baselines.py
 python scripts/simulate_strategic.py
+python scripts/simulate_bonus_sensitivity.py
 ```
 
 ## Game design snapshot

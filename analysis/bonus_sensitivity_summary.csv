@@ -1,0 +1,5 @@
+profile,bonus_equity,mean_total,median_total,mean_upper,median_upper,bonus_rate,spins_per_game
+neutral,0.0,319.747,318.0,110.666,110.0,0.032,35.273
+balanced,7.0,315.331,312.0,107.809,107.0,0.023,35.31
+aggressive,14.0,314.043,311.0,107.422,107.0,0.03,35.149
+very_aggressive,28.0,309.219,305.0,105.561,105.0,0.028,35.136

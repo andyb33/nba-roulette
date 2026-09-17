@@ -10,7 +10,7 @@ from statistics import mean
 from .game import GameState, MAX_SPINS_PER_TURN
 from .models import Lock, PlayerTeamSeason
 from .roulette import RouletteEngine
-from .scoring import Category, category_score
+from .scoring import Category, UPPER_CATEGORIES, category_score
 
 
 @dataclass(frozen=True, slots=True)
@@ -20,6 +20,7 @@ class SimulatedGame:
     spins_used: int
     scorecard: dict[Category, int]
     lock_counts: dict[str, int]
+    upper_score: int
 
 
 @dataclass(frozen=True, slots=True)
@@ -110,8 +111,17 @@ class StrategicPolicy:
         Category.BLOCKS: 20,
     }
 
-    def __init__(self, records: tuple[PlayerTeamSeason, ...]) -> None:
+    def __init__(
+        self,
+        records: tuple[PlayerTeamSeason, ...],
+        bonus_equity_per_category: float = 7.0,
+        gap_aware_bonus: bool = False,
+    ) -> None:
         self.records = records
+        if bonus_equity_per_category < 0:
+            raise ValueError("Bonus equity cannot be negative")
+        self.bonus_equity_per_category = bonus_equity_per_category
+        self.gap_aware_bonus = gap_aware_bonus
         self.standard_weights = _standard_spin_weights(records)
         self.replacement_values = {
             category: sum(
@@ -131,39 +141,56 @@ class StrategicPolicy:
             tuple[tuple[PlayerTeamSeason, float], ...],
         ] = {}
         self._expectation_cache: dict[
-            tuple[str, str, int, frozenset[Lock], tuple[Category, ...]], float
+            tuple[str, str, int, frozenset[Lock], tuple[Category, ...], int], float
         ] = {}
         self._best_choice_cache: dict[
-            tuple[str, str, int, tuple[Category, ...]], tuple[Category, float]
+            tuple[str, str, int, tuple[Category, ...], int], tuple[Category, float]
         ] = {}
 
     def _category_utility(
         self,
         record: PlayerTeamSeason,
         category: Category,
+        upper_score_so_far: int,
+        open_categories: tuple[Category, ...],
     ) -> float:
         score = self._scores[(record.season, record.team, record.player_id)][category]
         utility = score - self.replacement_values[category]
-        target = self.upper_targets.get(category)
-        if target is not None:
-            # One fifth of the +35 bonus, scaled by progress toward that slot's
-            # conceptual 20/10/10/2/2 target and capped to avoid dominating.
-            utility += 7 * min(score / target, 1.25)
+        if category in UPPER_CATEGORIES and upper_score_so_far < 140:
+            if self.gap_aware_bonus:
+                remaining_upper = tuple(
+                    item for item in open_categories if item in UPPER_CATEGORIES
+                )
+                target = max(1.0, (140 - upper_score_so_far) / len(remaining_upper))
+                cap = 1.5
+            else:
+                target = self.upper_targets[category]
+                cap = 1.25
+            utility += self.bonus_equity_per_category * min(score / target, cap)
         return utility
 
     def _best_choice(
         self,
         record: PlayerTeamSeason,
         open_categories: tuple[Category, ...],
+        upper_score_so_far: int,
     ) -> tuple[Category, float]:
-        key = (record.season, record.team, record.player_id, open_categories)
+        key = (
+            record.season, record.team, record.player_id,
+            open_categories, upper_score_so_far,
+        )
         if key not in self._best_choice_cache:
             category = max(
                 open_categories,
-                key=lambda item: self._category_utility(record, item),
+                key=lambda item: self._category_utility(
+                    record, item, upper_score_so_far, open_categories
+                ),
             )
             self._best_choice_cache[key] = (
-                category, self._category_utility(record, category)
+                category,
+                self._category_utility(
+                    record, category, upper_score_so_far, open_categories
+                ),
             )
         return self._best_choice_cache[key]
 
@@ -188,11 +215,17 @@ class StrategicPolicy:
         current: PlayerTeamSeason,
         locks: frozenset[Lock],
         open_categories: tuple[Category, ...],
+        upper_score_so_far: int,
     ) -> float:
-        key = (current.season, current.team, current.player_id, locks, open_categories)
+        key = (
+            current.season, current.team, current.player_id,
+            locks, open_categories, upper_score_so_far,
+        )
         if key not in self._expectation_cache:
             self._expectation_cache[key] = sum(
-                weight * self._best_choice(record, open_categories)[1]
+                weight * self._best_choice(
+                    record, open_categories, upper_score_so_far
+                )[1]
                 for record, weight in self._weighted_outcomes(current, locks)
             )
         return self._expectation_cache[key]
@@ -203,8 +236,11 @@ class StrategicPolicy:
         used_locks: dict[str, int] = {}
         while game.turn is not None:
             open_categories = game.open_categories
+            upper_score_so_far = sum(
+                game.scorecard.get(category, 0) for category in UPPER_CATEGORIES
+            )
             best_category, current_utility = self._best_choice(
-                game.turn.current, open_categories
+                game.turn.current, open_categories, upper_score_so_far
             )
             if game.turn.spins_used == MAX_SPINS_PER_TURN:
                 spins_used = game.turn.spins_used
@@ -212,7 +248,12 @@ class StrategicPolicy:
                 return SimulatedTurn(spins_used, used_locks)
 
             expected = [
-                (self._expected_utility(game.turn.current, locks, open_categories), locks)
+                (
+                    self._expected_utility(
+                        game.turn.current, locks, open_categories, upper_score_so_far
+                    ),
+                    locks,
+                )
                 for locks in self.lock_options
             ]
             best_expected, best_locks = max(
@@ -315,6 +356,7 @@ def simulate_game(
         spins_used=spins_used,
         scorecard=dict(game.scorecard),
         lock_counts=lock_counts,
+        upper_score=sum(game.scorecard[category] for category in UPPER_CATEGORIES),
     )
 
 
@@ -322,6 +364,7 @@ def summarize_games(games: list[SimulatedGame]) -> dict:
     if not games:
         raise ValueError("At least one simulated game is required")
     totals = sorted(game.total_score for game in games)
+    upper_scores = sorted(game.upper_score for game in games)
 
     def percentile(probability: float) -> float:
         position = (len(totals) - 1) * probability
@@ -329,6 +372,13 @@ def summarize_games(games: list[SimulatedGame]) -> dict:
         upper = min(lower + 1, len(totals) - 1)
         fraction = position - lower
         return totals[lower] * (1 - fraction) + totals[upper] * fraction
+
+    def upper_percentile(probability: float) -> float:
+        position = (len(upper_scores) - 1) * probability
+        lower = int(position)
+        upper = min(lower + 1, len(upper_scores) - 1)
+        fraction = position - lower
+        return upper_scores[lower] * (1 - fraction) + upper_scores[upper] * fraction
 
     return {
         "games": len(games),
@@ -341,6 +391,16 @@ def summarize_games(games: list[SimulatedGame]) -> dict:
             "max": totals[-1],
         },
         "upper_bonus_rate": mean(game.bonus > 0 for game in games),
+        "upper_score": {
+            "mean": mean(upper_scores),
+            "p10": upper_percentile(0.10),
+            "median": upper_percentile(0.50),
+            "p90": upper_percentile(0.90),
+            "threshold_rates": {
+                str(threshold): mean(game.upper_score >= threshold for game in games)
+                for threshold in (120, 130, 135, 140, 145, 150)
+            },
+        },
         "average_spins_per_game": mean(game.spins_used for game in games),
         "average_spins_per_turn": mean(game.spins_used for game in games) / len(Category),
         "average_lock_uses_per_game": {
