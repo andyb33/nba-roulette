@@ -10,7 +10,9 @@ from statistics import mean
 from .game import GameState, MAX_SPINS_PER_TURN
 from .models import Lock, PlayerTeamSeason
 from .roulette import RouletteEngine
-from .scoring import Category, UPPER_CATEGORIES, category_score
+from .scoring import (
+    Category, UPPER_BONUS_THRESHOLD, UPPER_CATEGORIES, category_score,
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -156,12 +158,15 @@ class StrategicPolicy:
     ) -> float:
         score = self._scores[(record.season, record.team, record.player_id)][category]
         utility = score - self.replacement_values[category]
-        if category in UPPER_CATEGORIES and upper_score_so_far < 140:
+        if category in UPPER_CATEGORIES and upper_score_so_far < UPPER_BONUS_THRESHOLD:
             if self.gap_aware_bonus:
                 remaining_upper = tuple(
                     item for item in open_categories if item in UPPER_CATEGORIES
                 )
-                target = max(1.0, (140 - upper_score_so_far) / len(remaining_upper))
+                target = max(
+                    1.0,
+                    (UPPER_BONUS_THRESHOLD - upper_score_so_far) / len(remaining_upper),
+                )
                 cap = 1.5
             else:
                 target = self.upper_targets[category]

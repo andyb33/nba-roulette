@@ -4,7 +4,8 @@ import unittest
 
 from nba_roulette.models import PlayerTeamSeason
 from nba_roulette.scoring import (
-    Category, UPPER_BONUS_SCORE, category_score, round_half_up, upper_bonus,
+    Category, UPPER_BONUS_SCORE, UPPER_BONUS_THRESHOLD,
+    category_score, round_half_up, upper_bonus,
 )
 
 
@@ -53,14 +54,18 @@ class ScoringTests(unittest.TestCase):
 
     def test_upper_bonus_boundaries_and_exclusions(self) -> None:
         base = {
-            Category.POINTS: 40, Category.REBOUNDS: 30, Category.ASSISTS: 30,
-            Category.STEALS: 20, Category.BLOCKS: 19,
+            Category.POINTS: 35, Category.REBOUNDS: 25, Category.ASSISTS: 25,
+            Category.STEALS: 18, Category.BLOCKS: 16,
             Category.GAMES_PLAYED: 82, Category.JERSEY: 99,
         }
+        self.assertEqual(sum(base[category] for category in (
+            Category.POINTS, Category.REBOUNDS, Category.ASSISTS,
+            Category.STEALS, Category.BLOCKS,
+        )), UPPER_BONUS_THRESHOLD - 1)
         self.assertEqual(upper_bonus(base), 0)
-        base[Category.BLOCKS] = 20
+        base[Category.BLOCKS] = 17
         self.assertEqual(upper_bonus(base), UPPER_BONUS_SCORE)
-        base[Category.BLOCKS] = 21
+        base[Category.BLOCKS] = 18
         self.assertEqual(upper_bonus(base), UPPER_BONUS_SCORE)
         del base[Category.BLOCKS]
         self.assertEqual(upper_bonus(base), 0)

@@ -47,7 +47,9 @@ them. A new lock set applies to the current result.
 - Major Award scores 50 once if MVP, DPOY, or ROTY is true; awards do not stack.
 - Individual awards follow the player-season metadata on each eligible stint.
 - Champion follows the selected team-specific record.
-- The +35 Upper Bonus is derived from the five statistical categories at 140+.
+- GDD v1.1 awards the +35 Upper Bonus at 120+ across the five statistical
+  categories. The original v1.0 hypothesis was 140+ and remains documented in
+  the historical simulation reports.
 
 ## Verification
 
