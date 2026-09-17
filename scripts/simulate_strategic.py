@@ -29,7 +29,9 @@ DEFAULT_SEED = 20260918
 def write_category_csv(result: dict) -> None:
     with CATEGORY_OUTPUT.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(
-            handle, fieldnames=("category", "mean_score", "zero_rate")
+            handle,
+            fieldnames=("category", "mean_score", "zero_rate"),
+            lineterminator="\n",
         )
         writer.writeheader()
         for category in Category:
@@ -103,6 +105,21 @@ def write_report(payload: dict, baselines: dict) -> None:
         "  accolades rather than merely increasing common statistical scores.",
         "- The heuristic's assumptions should be varied in sensitivity tests before any",
         "  permanent scoring change is made.",
+    ])
+    previous = payload.get("two_season_baseline")
+    if previous:
+        old = previous["strategic"]
+        lines.extend([
+            "",
+            "## Effect of adding 2025–26",
+            "",
+            "| Metric | Two-season | Three-season | Change |",
+            "|---|---:|---:|---:|",
+            f"| Mean score | {old['total_score']['mean']:.1f} | {strategic['total_score']['mean']:.1f} | {strategic['total_score']['mean'] - old['total_score']['mean']:+.1f} |",
+            f"| Median score | {old['total_score']['median']:.0f} | {strategic['total_score']['median']:.0f} | {strategic['total_score']['median'] - old['total_score']['median']:+.0f} |",
+            f"| Upper Bonus rate | {old['upper_bonus_rate']:.2%} | {strategic['upper_bonus_rate']:.2%} | {strategic['upper_bonus_rate'] - old['upper_bonus_rate']:+.2%} |",
+        ])
+    lines.extend([
         "",
     ])
     DOC.write_text("\n".join(lines), encoding="utf-8")
@@ -119,6 +136,12 @@ def main() -> None:
         raise FileNotFoundError("Run scripts/simulate_baselines.py first")
 
     records = load_records()
+    previous = None
+    if OUTPUT.exists():
+        saved = json.loads(OUTPUT.read_text(encoding="utf-8"))
+        previous = saved.get("two_season_baseline", saved)
+        if previous.get("dataset_records") != 895:
+            previous = None
     policy = StrategicPolicy(records)
     games = [simulate_game(records, policy, args.seed + index) for index in range(args.games)]
     result = summarize_games(games)
@@ -130,6 +153,8 @@ def main() -> None:
         "policy_definition": "replacement-value, bonus-aware, exact lock-mask heuristic",
         "strategic": result,
     }
+    if previous:
+        payload["two_season_baseline"] = previous
     baselines = json.loads(BASELINES.read_text(encoding="utf-8"))
     OUTPUT.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
     write_category_csv(result)

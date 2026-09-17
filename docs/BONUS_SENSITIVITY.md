@@ -5,33 +5,40 @@ upper category. Roulette rules, locks, score values, seeds, and dataset remain
 unchanged. Bonus equity is a decision weight, not points added to the game score.
 
 Each profile played **2,000 complete games** against
-895 records using common starting seed `20260919`.
+1346 records using common starting seed `20260919`.
 
 | Profile | Equity/category | Mean total | Median | Mean upper | Upper P90 | Bonus rate |
 |---|---:|---:|---:|---:|---:|---:|
-| Neutral | 0 | 327.4 | 324 | 110.3 | 128 | 24.25% |
-| Balanced | 7 | 321.1 | 318 | 106.4 | 125 | 18.15% |
-| Aggressive | 14 | 318.6 | 315 | 106.1 | 127 | 19.20% |
-| Very Aggressive | 28 | 306.8 | 303 | 103.2 | 124 | 16.20% |
+| Neutral | 0 | 329.7 | 327 | 109.2 | 128 | 23.55% |
+| Balanced | 7 | 324.5 | 320 | 106.8 | 125 | 19.10% |
+| Aggressive | 14 | 321.5 | 318 | 106.1 | 126 | 19.95% |
+| Very Aggressive | 28 | 307.7 | 305 | 103.5 | 124 | 17.25% |
 
 ## Threshold attainment
 
 | Profile | 120+ | 130+ | 135+ | 140+ | 145+ | 150+ |
 |---|---:|---:|---:|---:|---:|---:|
-| Neutral | 24.25% | 8.80% | 4.85% | 2.50% | 0.95% | 0.40% |
-| Balanced | 18.15% | 6.80% | 3.30% | 2.10% | 0.85% | 0.35% |
-| Aggressive | 19.20% | 7.95% | 4.85% | 2.80% | 1.55% | 0.65% |
-| Very Aggressive | 16.20% | 5.20% | 2.80% | 1.45% | 0.75% | 0.30% |
+| Neutral | 23.55% | 7.55% | 3.25% | 1.60% | 0.75% | 0.30% |
+| Balanced | 19.10% | 6.25% | 3.90% | 2.35% | 1.15% | 0.60% |
+| Aggressive | 19.95% | 7.40% | 4.75% | 2.35% | 1.35% | 0.90% |
+| Very Aggressive | 17.25% | 5.55% | 3.15% | 1.95% | 1.00% | 0.50% |
+
+## Effect of adding 2025–26
+
+| Profile | Two-season mean | Three-season mean | Change | Two-season bonus | Three-season bonus |
+|---|---:|---:|---:|---:|---:|
+| Neutral | 327.4 | 329.7 | +2.3 | 24.25% | 23.55% |
+| Balanced | 321.1 | 324.5 | +3.4 | 18.15% | 19.10% |
+| Aggressive | 318.6 | 321.5 | +2.9 | 19.20% | 19.95% |
+| Very Aggressive | 306.8 | 307.7 | +0.9 | 16.20% | 17.25% |
 
 ## Interpretation
 
-- Raising bonus priority did not improve bonus attainment. Aggressive profiles
-  often consumed upper categories with mediocre scores too early.
-- **120 ranged from 16.20% to 24.25%**, while 130 ranged from 5.20% to 8.80%
-  and 140 ranged from 1.45% to 2.80% across profiles.
-- **Keep the prototype rule at 120 → +35.** It remains demanding and is
-  achieved in roughly one game in four by the strongest tested profile.
+- The strongest tested 120-point attainment came from **Neutral** at **23.55%**.
+- Across profiles, 120-point attainment ranged from **17.25% to 23.55%**.
+- Keep or change **120 → +35** only after comparing these three-season results
+  with the saved two-season baseline and the strategic-policy score trade-off.
 - Keep 130 as a harder alternative for later testing; restore 140 only if real
-  players outperform the simulation or the third season changes the pool.
+  players substantially outperform the simulation.
 - These simulations guide the prototype setting; human playtesting remains the
   final check because people do not optimize like a deterministic heuristic.

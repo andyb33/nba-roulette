@@ -41,6 +41,10 @@ Random and Greedy full-game simulation baselines.
 See [`docs/STRATEGIC_SIMULATION.md`](docs/STRATEGIC_SIMULATION.md) for the
 lock-aware heuristic comparison.
 
+See [`docs/THREE_SEASON_SIMULATION_RERUN.md`](docs/THREE_SEASON_SIMULATION_RERUN.md)
+for the consolidated two-season versus three-season simulation results and
+the resulting decision to retain the 120 → +35 Upper Bonus.
+
 See [`docs/GDD_V1_1_CHANGELOG.md`](docs/GDD_V1_1_CHANGELOG.md) for the evidence-
 based change from the original 140-point bonus threshold to the 120-point
 prototype rule.
@@ -77,6 +81,7 @@ python scripts/verify_engine.py
 python scripts/simulate_baselines.py
 python scripts/simulate_strategic.py
 python scripts/simulate_bonus_sensitivity.py
+python scripts/summarize_simulation_rerun.py
 ```
 
 ## Play one terminal game

@@ -34,6 +34,7 @@ def write_category_csv(summary: dict) -> None:
         writer = csv.DictWriter(
             handle,
             fieldnames=("policy", "category", "mean_score", "zero_rate"),
+            lineterminator="\n",
         )
         writer.writeheader()
         for policy, result in summary["policies"].items():
@@ -104,6 +105,27 @@ def write_report(summary: dict) -> None:
         "  cumulative-tier All-NBA and All-Defense slots, plus Major Award.",
         "- GP is the strongest reliable category, while Jersey provides a large but",
         "  volatile score. A strategic policy must account for both before judging balance.",
+    ])
+    previous = summary.get("two_season_baseline")
+    if previous:
+        lines.extend([
+            "",
+            "## Effect of adding 2025–26",
+            "",
+            "| Policy | Two-season mean | Three-season mean | Change | Two-season bonus | Three-season bonus |",
+            "|---|---:|---:|---:|---:|---:|",
+        ])
+        for name in ("random", "greedy"):
+            old = previous["policies"][name]
+            new = summary["policies"][name]
+            old_mean = old["total_score"]["mean"]
+            new_mean = new["total_score"]["mean"]
+            lines.append(
+                f"| {name.title()} | {old_mean:.1f} | {new_mean:.1f} | "
+                f"{new_mean - old_mean:+.1f} | {old['upper_bonus_rate']:.2%} | "
+                f"{new['upper_bonus_rate']:.2%} |"
+            )
+    lines.extend([
         "",
         "## Interpretation boundary",
         "",
@@ -125,6 +147,13 @@ def main() -> None:
         parser.error("--games must be positive")
 
     records = load_records()
+    previous = None
+    previous_path = ANALYSIS / "baseline_simulation.json"
+    if previous_path.exists():
+        saved = json.loads(previous_path.read_text(encoding="utf-8"))
+        previous = saved.get("two_season_baseline", saved)
+        if previous.get("dataset_records") != 895:
+            previous = None
     summary = {
         "seed": args.seed,
         "games_per_policy": args.games,
@@ -135,6 +164,8 @@ def main() -> None:
             "greedy": run_policy(records, GreedyPolicy(records), args.games, args.seed + 10_000_000),
         },
     }
+    if previous:
+        summary["two_season_baseline"] = previous
     ANALYSIS.mkdir(exist_ok=True)
     (ANALYSIS / "baseline_simulation.json").write_text(
         json.dumps(summary, indent=2) + "\n", encoding="utf-8"
