@@ -17,11 +17,18 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from nba_roulette.data import load_records
+from nba_roulette.playtest import PlaytestBatchLogger
 from nba_roulette.web import BrowserGame
 
 
 STATIC = ROOT / "web" / "static"
 RECORDS = load_records()
+PLAYTEST_LOGGER = PlaytestBatchLogger(
+    ROOT / "playtest_logs",
+    "playtest_batch_02_v0_3_keep_validation",
+    "Playtest Batch 2 — v0.3 Keep Validation",
+    target=10,
+)
 SESSIONS: dict[str, BrowserGame] = {}
 ASSETS = {
     "/": ("index.html", "text/html; charset=utf-8"),
@@ -73,7 +80,7 @@ class Handler(BaseHTTPRequestHandler):
         created = new or key not in SESSIONS
         if created:
             key = secrets.token_urlsafe(18)
-            SESSIONS[key] = BrowserGame(RECORDS)
+            SESSIONS[key] = BrowserGame(RECORDS, logger=PLAYTEST_LOGGER)
         return SESSIONS[key], f"nba_session={key}; Path=/; SameSite=Lax" if created else None
 
     def _body(self) -> dict:
@@ -108,6 +115,11 @@ def main() -> None:
     args = parser.parse_args()
     server = ThreadingHTTPServer((args.host, args.port), Handler)
     print(f"NBA Roulette running at http://{args.host}:{args.port}")
+    print(
+        f"Playtest batch: {PLAYTEST_LOGGER.batch_name} "
+        f"({PLAYTEST_LOGGER.completed_count()}/{PLAYTEST_LOGGER.target})"
+    )
+    print(f"Logs: {PLAYTEST_LOGGER.directory}")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
