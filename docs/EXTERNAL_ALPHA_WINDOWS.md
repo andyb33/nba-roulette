@@ -27,3 +27,5 @@ This is an unsigned early prototype. Windows SmartScreen may display a warning
 because the app does not yet have a paid code-signing certificate. If you trust
 the person who sent you this build, choose "More info" and then "Run anyway".
 
+If the launcher cannot start, it keeps the error window open and saves details
+to `Documents\NBA Roulette\launcher_error.txt`. Send that file to the developer.

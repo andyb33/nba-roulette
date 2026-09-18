@@ -9,6 +9,7 @@ import os
 import secrets
 import sys
 import threading
+import traceback
 import webbrowser
 from http import HTTPStatus
 from http.cookies import SimpleCookie
@@ -19,6 +20,11 @@ from urllib.parse import urlparse
 FROZEN = bool(getattr(sys, "frozen", False))
 ROOT = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(ROOT))
+
+for stream_name in ("stdout", "stderr"):
+    stream = getattr(sys, stream_name, None)
+    if stream and hasattr(stream, "reconfigure"):
+        stream.reconfigure(errors="replace")
 
 from nba_roulette.data import load_records
 from nba_roulette.playtest import PlaytestBatchLogger
@@ -43,7 +49,7 @@ def default_log_directory() -> Path:
 PLAYTEST_LOGGER = PlaytestBatchLogger(
     default_log_directory(),
     "playtest_batch_04_v0_4_external_alpha",
-    "Playtest Batch 4 — v0.4 External Alpha",
+    "Playtest Batch 4 - v0.4 External Alpha",
     target=100,
 )
 SESSIONS: dict[str, BrowserGame] = {}
@@ -157,4 +163,17 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception:  # pragma: no cover - last-resort packaged-app diagnostics
+        details = traceback.format_exc()
+        error_directory = default_log_directory().parent
+        error_directory.mkdir(parents=True, exist_ok=True)
+        error_path = error_directory / "launcher_error.txt"
+        error_path.write_text(details, encoding="utf-8")
+        print("NBA Roulette could not start.", file=sys.stderr)
+        print(f"Error details were saved to: {error_path}", file=sys.stderr)
+        print(details, file=sys.stderr)
+        if FROZEN:
+            input("Press Enter to close...")
+        raise
