@@ -32,9 +32,41 @@ jobs:
         run: >-
           pyinstaller --noconfirm --clean --onefile
           --name NBA-Roulette-v0.4-External-Alpha
+          --paths "."
+          --collect-submodules nba_roulette
           --add-data "data/game;data/game"
           --add-data "web/static;web/static"
           scripts/run_web.py
+
+      - name: Smoke-test packaged launcher
+        shell: pwsh
+        run: |
+          $exe = Resolve-Path "dist/NBA-Roulette-v0.4-External-Alpha.exe"
+          $process = Start-Process -FilePath $exe -ArgumentList "--no-open-browser", "--port", "38117" -PassThru
+          try {
+            $ready = $false
+            for ($attempt = 0; $attempt -lt 30; $attempt++) {
+              Start-Sleep -Milliseconds 500
+              try {
+                $state = Invoke-RestMethod -Uri "http://127.0.0.1:38117/api/state"
+                if ($state.turn -eq 1 -and $state.turns_total -eq 14) {
+                  $ready = $true
+                  break
+                }
+              } catch {
+                if ($process.HasExited) {
+                  throw "Packaged launcher exited before serving the game. Exit code: $($process.ExitCode)"
+                }
+              }
+            }
+            if (-not $ready) {
+              throw "Packaged launcher did not become ready within 15 seconds."
+            }
+          } finally {
+            if (-not $process.HasExited) {
+              Stop-Process -Id $process.Id -Force
+            }
+          }
 
       - name: Add tester instructions
         shell: pwsh
