@@ -5,15 +5,19 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import secrets
 import sys
+import threading
+import webbrowser
 from http import HTTPStatus
 from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
 
-ROOT = Path(__file__).resolve().parent.parent
+FROZEN = bool(getattr(sys, "frozen", False))
+ROOT = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(ROOT))
 
 from nba_roulette.data import load_records
@@ -22,12 +26,25 @@ from nba_roulette.web import BrowserGame
 
 
 STATIC = ROOT / "web" / "static"
-RECORDS = load_records()
+RECORDS = load_records(data_dir=ROOT / "data" / "game")
+
+
+def default_log_directory() -> Path:
+    """Keep packaged playtest evidence outside PyInstaller's temporary folder."""
+    override = os.environ.get("NBA_ROULETTE_LOG_DIR")
+    if override:
+        return Path(override).expanduser()
+    if FROZEN:
+        documents = Path(os.environ.get("USERPROFILE", Path.home())) / "Documents"
+        return documents / "NBA Roulette" / "playtest_logs"
+    return ROOT / "playtest_logs"
+
+
 PLAYTEST_LOGGER = PlaytestBatchLogger(
-    ROOT / "playtest_logs",
-    "playtest_batch_03_v0_4_unlocked_slot_validation",
-    "Playtest Batch 3 — v0.4 Unlocked-Slot Validation",
-    target=10,
+    default_log_directory(),
+    "playtest_batch_04_v0_4_external_alpha",
+    "Playtest Batch 4 — v0.4 External Alpha",
+    target=100,
 )
 SESSIONS: dict[str, BrowserGame] = {}
 ASSETS = {
@@ -111,15 +128,26 @@ class Handler(BaseHTTPRequestHandler):
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--host", default="127.0.0.1")
-    parser.add_argument("--port", type=int, default=8000)
+    parser.add_argument("--port", type=int, default=0 if FROZEN else 8000)
+    parser.add_argument(
+        "--open-browser",
+        action=argparse.BooleanOptionalAction,
+        default=FROZEN,
+        help="Open NBA Roulette in the default browser after startup",
+    )
     args = parser.parse_args()
     server = ThreadingHTTPServer((args.host, args.port), Handler)
-    print(f"NBA Roulette running at http://{args.host}:{args.port}")
+    port = server.server_address[1]
+    url = f"http://{args.host}:{port}"
+    print(f"NBA Roulette running at {url}")
     print(
         f"Playtest batch: {PLAYTEST_LOGGER.batch_name} "
         f"({PLAYTEST_LOGGER.completed_count()}/{PLAYTEST_LOGGER.target})"
     )
     print(f"Logs: {PLAYTEST_LOGGER.directory}")
+    print("Keep this window open while playing. Close it to stop NBA Roulette.")
+    if args.open_browser:
+        threading.Timer(0.6, webbrowser.open, args=(url,)).start()
     try:
         server.serve_forever()
     except KeyboardInterrupt:

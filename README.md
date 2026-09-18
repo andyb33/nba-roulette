@@ -112,9 +112,23 @@ Prototype v0.4 guarantees that every unlocked slot changes whenever a valid
 combined outcome permits it, and gives used scorecard categories an unmistakable
 filled and checked state.
 
-Completed local games are automatically captured for **Playtest Batch 3 — v0.4
-Unlocked-Slot Validation** in `playtest_logs/` as detailed JSONL plus a CSV summary. The
-folder is intentionally excluded from Git.
+## Build the Windows external alpha
+
+The GitHub Actions workflow in `.github/workflows/build-windows-exe.yml` creates
+a single-file Windows launcher. It bundles the three game datasets and browser
+assets, selects an available local port, and opens the game automatically. The
+tester does not need GitHub, Python, or a command prompt.
+
+Run **Build Windows alpha** from the repository's Actions tab, download the
+resulting ZIP artifact, and send that ZIP to testers. See
+[`docs/EXTERNAL_ALPHA_WINDOWS.md`](docs/EXTERNAL_ALPHA_WINDOWS.md) for the exact
+tester instructions. Completed external-alpha games are stored on each tester's
+computer under `Documents\NBA Roulette\playtest_logs`.
+
+Completed local games are automatically captured for **Playtest Batch 4 — v0.4
+External Alpha** in `playtest_logs/` as detailed JSONL plus a CSV summary. The
+folder is intentionally excluded from Git. Packaged Windows builds use the
+tester-facing Documents location described above.
 
 ## Game design snapshot
 

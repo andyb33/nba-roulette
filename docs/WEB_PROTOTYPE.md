@@ -80,19 +80,19 @@ Used scorecard categories now use a filled slate background, inset status bar,
 and check badge. High-value used categories retain gold emphasis, but no longer
 look like currently selectable glowing opportunities.
 
-## Playtest Batch 3 logging
+## External-alpha logging
 
-The next ten completed local games are automatically recorded as **Playtest
-Batch 3 — v0.4 Unlocked-Slot Validation**. The server creates two untracked
+Completed games are automatically recorded as **Playtest Batch 4 — v0.4
+External Alpha**. The server creates two untracked
 local files:
 
-- `playtest_logs/playtest_batch_03_v0_4_unlocked_slot_validation.jsonl` contains one
+- `playtest_logs/playtest_batch_04_v0_4_external_alpha.jsonl` contains one
   detailed JSON record per game, including every visible spin, Keep selection,
   scored player, category result, repeat count, and final score.
-- `playtest_logs/playtest_batch_03_v0_4_unlocked_slot_validation.csv` contains one
+- `playtest_logs/playtest_batch_04_v0_4_external_alpha.csv` contains one
   summary row per game for quick spreadsheet analysis.
 
-The batch stops recording after ten completed games. Starting or abandoning an
-unfinished game does not consume a batch slot. The `playtest_logs/` directory is
-excluded from Git so local participant data is not committed accidentally.
-Any partially completed Batch 2 files remain untouched for diagnostic analysis.
+The external-alpha logger accepts up to 100 completed games per computer.
+Starting or abandoning an unfinished game does not consume a batch slot. Source
+runs use the repository's `playtest_logs/` directory; packaged Windows builds
+use `Documents\NBA Roulette\playtest_logs`. Both locations are kept outside Git.

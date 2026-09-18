@@ -1,0 +1,50 @@
+name: Build Windows alpha
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "prototype-v*"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install packager
+        run: python -m pip install --disable-pip-version-check pyinstaller==6.16.0
+
+      - name: Run tests
+        run: python -m unittest discover -v
+
+      - name: Build single-file launcher
+        shell: cmd
+        run: >-
+          pyinstaller --noconfirm --clean --onefile
+          --name NBA-Roulette-v0.4-External-Alpha
+          --add-data "data/game;data/game"
+          --add-data "web/static;web/static"
+          scripts/run_web.py
+
+      - name: Add tester instructions
+        shell: pwsh
+        run: Copy-Item docs/EXTERNAL_ALPHA_WINDOWS.md dist/README.txt
+
+      - name: Upload Windows build
+        uses: actions/upload-artifact@v4
+        with:
+          name: NBA-Roulette-v0.4-External-Alpha-Windows
+          path: |
+            dist/NBA-Roulette-v0.4-External-Alpha.exe
+            dist/README.txt
+          if-no-files-found: error
