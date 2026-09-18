@@ -67,3 +67,18 @@ Prototype v0.3 excludes the exact current Player × Team × Season result from a
 reroll whenever another valid outcome exists. Keeping Team + Player therefore
 forces a different season; keeping Season + Team forces a different player.
 The fallback permits a repeat only when the selected Keeps leave no alternative.
+
+## Playtest Batch 2 logging
+
+The next ten completed local games are automatically recorded as **Playtest
+Batch 2 — v0.3 Keep Validation**. The server creates two untracked local files:
+
+- `playtest_logs/playtest_batch_02_v0_3_keep_validation.jsonl` contains one
+  detailed JSON record per game, including every visible spin, Keep selection,
+  scored player, category result, repeat count, and final score.
+- `playtest_logs/playtest_batch_02_v0_3_keep_validation.csv` contains one
+  summary row per game for quick spreadsheet analysis.
+
+The batch stops recording after ten completed games. Starting or abandoning an
+unfinished game does not consume a batch slot. The `playtest_logs/` directory is
+excluded from Git so local participant data is not committed accidentally.
