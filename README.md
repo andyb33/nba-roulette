@@ -107,6 +107,10 @@ architecture, v0.2 playtest-driven interface changes, and deliberate limitations
 Prototype v0.3 also guarantees that a reroll changes the current complete
 player-team-season whenever a legal alternative exists.
 
+Completed local games are automatically captured for **Playtest Batch 2 — v0.3
+Keep Validation** in `playtest_logs/` as detailed JSONL plus a CSV summary. The
+folder is intentionally excluded from Git.
+
 ## Game design snapshot
 
 Each turn produces a valid `Season → Team → Player` combination. Before a
