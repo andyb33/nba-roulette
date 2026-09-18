@@ -1,4 +1,5 @@
 __pycache__/
 *.py[cod]
 data/raw/
+playtest_logs/
 .DS_Store
