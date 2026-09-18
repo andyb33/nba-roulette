@@ -57,6 +57,10 @@ See [`docs/GDD_V1_3_CHANGELOG.md`](docs/GDD_V1_3_CHANGELOG.md) for the
 playtest-driven reroll difference rule, repeat-rate audit, and rationale for
 not yet adding a game-wide player ban.
 
+See [`docs/GDD_V1_4_CHANGELOG.md`](docs/GDD_V1_4_CHANGELOG.md) for the stronger
+unlocked-slot reroll rule, clarified used-category state, and clean transition
+from the interrupted v0.3 batch to v0.4 validation.
+
 ## Rebuild a dataset
 
 ```bash
@@ -104,11 +108,12 @@ Then open `http://127.0.0.1:8000`. The prototype uses only the Python standard
 library and the existing game engine; no additional packages are required.
 See [`docs/WEB_PROTOTYPE.md`](docs/WEB_PROTOTYPE.md) for the included features,
 architecture, v0.2 playtest-driven interface changes, and deliberate limitations.
-Prototype v0.3 also guarantees that a reroll changes the current complete
-player-team-season whenever a legal alternative exists.
+Prototype v0.4 guarantees that every unlocked slot changes whenever a valid
+combined outcome permits it, and gives used scorecard categories an unmistakable
+filled and checked state.
 
-Completed local games are automatically captured for **Playtest Batch 2 — v0.3
-Keep Validation** in `playtest_logs/` as detailed JSONL plus a CSV summary. The
+Completed local games are automatically captured for **Playtest Batch 3 — v0.4
+Unlocked-Slot Validation** in `playtest_logs/` as detailed JSONL plus a CSV summary. The
 folder is intentionally excluded from Git.
 
 ## Game design snapshot

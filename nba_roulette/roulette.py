@@ -26,6 +26,9 @@ class RouletteEngine:
             tuple[str, str, int, frozenset[Lock]],
             dict[str, dict[str, tuple[PlayerTeamSeason, ...]]],
         ] = {}
+        self._strict_change_possible: dict[
+            tuple[str, str, int, frozenset[Lock]], bool
+        ] = {}
 
     def spin(
         self,
@@ -38,9 +41,19 @@ class RouletteEngine:
         if not lock_set:
             if len(self.records) == 1:
                 return self.records[0]
+            key = (current.season, current.team, current.player_id, lock_set)
+            if key not in self._strict_change_possible:
+                self._strict_change_possible[key] = any(
+                    self._changes_all_unlocked(record, current, lock_set)
+                    for record in self.records
+                )
             while True:
                 result = self._resolve(self._standard_tree, lock_set, current)
-                if result != current:
+                if (
+                    self._changes_all_unlocked(result, current, lock_set)
+                    if self._strict_change_possible[key]
+                    else result != current
+                ):
                     return result
         if current is None:
             raise ValueError("Locks require a current roulette result")
@@ -98,17 +111,23 @@ class RouletteEngine:
     ) -> dict[str, dict[str, tuple[PlayerTeamSeason, ...]]]:
         key = (current.season, current.team, current.player_id, locks)
         if key not in self._locked_trees:
-            candidates = tuple(
+            matching = tuple(
                 record
                 for record in self.records
-                if self._matches(record, current, locks) and record != current
+                if self._matches(record, current, locks)
+            )
+            candidates = tuple(
+                record for record in matching
+                if self._changes_all_unlocked(record, current, locks)
             )
             if not candidates:
                 candidates = tuple(
-                    record for record in self.records if self._matches(record, current, locks)
+                    record for record in matching if record != current
                 )
             if not candidates:
-                raise ValueError("No valid outcomes match the selected locks")
+                candidates = matching
+            if not candidates:
+                raise ValueError("No valid outcomes match the selected Keeps")
             self._locked_trees[key] = self._build_tree(candidates)
         return self._locked_trees[key]
 
@@ -134,4 +153,16 @@ class RouletteEngine:
             (Lock.SEASON not in locks or candidate.season == current.season)
             and (Lock.TEAM not in locks or candidate.team == current.team)
             and (Lock.PLAYER not in locks or candidate.player_id == current.player_id)
+        )
+
+    @staticmethod
+    def _changes_all_unlocked(
+        candidate: PlayerTeamSeason,
+        current: PlayerTeamSeason,
+        locks: frozenset[Lock],
+    ) -> bool:
+        return (
+            (Lock.SEASON in locks or candidate.season != current.season)
+            and (Lock.TEAM in locks or candidate.team != current.team)
+            and (Lock.PLAYER in locks or candidate.player_id != current.player_id)
         )

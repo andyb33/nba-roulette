@@ -40,11 +40,12 @@ multiple eligible seasons or team stints.
 Locks are supplied again before every reroll, so the player may freely change
 them. A new lock set applies to the current result.
 
-Every reroll excludes the exact current Player × Team × Season result whenever
-at least one legal alternative exists. Keeping Team + Player therefore forces a
-different eligible season, while keeping Season + Team forces a different
-eligible player. The remaining outcomes retain hierarchical equal weighting.
-If the selected Keeps leave only one legal record, that record may repeat.
+Every unlocked slot changes whenever the valid pool contains an outcome that
+changes all unlocked values together. Keeping Team alone therefore changes both
+Season and Player; keeping Team + Player changes Season; and a full reroll
+changes Season, Team, and Player. The remaining strict-change outcomes retain
+hierarchical equal weighting. If no outcome can change every unlocked slot, the
+engine falls back to any different complete result, then to the sole legal row.
 
 ## Scoring Defaults
 

@@ -28,10 +28,11 @@ function categoryRow(category) {
     : category.preview !== null ? "Score this player" : "Spin to preview";
   const valueLabel = category.formula || (category.fixed_value ? `${category.fixed_value} pts` : "");
   const icon = category.icon ? `<i class="category-icon" aria-hidden="true">${category.icon}</i>` : "";
+  const status = category.used ? `<span class="category-status" aria-label="Scored">✓</span>` : "";
   const classes = [category.used && "used", qualifies && "qualified", elite && "elite", scoredHighlight && "scored-highlight"].filter(Boolean).join(" ");
   return `<button class="category ${classes}" data-category="${category.id}" ${category.used || category.preview === null ? "disabled" : ""}>
     ${icon}<span class="category-copy"><strong>${category.label} <em>${valueLabel}</em></strong><small>${detail}</small></span>
-    <b>${score ?? "—"}</b>
+    <b>${score ?? "—"}</b>${status}
   </button>`;
 }
 

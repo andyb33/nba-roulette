@@ -68,17 +68,31 @@ reroll whenever another valid outcome exists. Keeping Team + Player therefore
 forces a different season; keeping Season + Team forces a different player.
 The fallback permits a repeat only when the selected Keeps leave no alternative.
 
-## Playtest Batch 2 logging
+## Prototype v0.4 — Unlocked slots visibly reroll
+
+Human testing showed that keeping Team could still return the same Season,
+which made an unlocked roulette slot appear not to reroll. v0.4 now requires
+every unlocked slot to change whenever one valid combined outcome permits it.
+If strict change is impossible, the engine falls back to a different complete
+result rather than invalidating the turn.
+
+Used scorecard categories now use a filled slate background, inset status bar,
+and check badge. High-value used categories retain gold emphasis, but no longer
+look like currently selectable glowing opportunities.
+
+## Playtest Batch 3 logging
 
 The next ten completed local games are automatically recorded as **Playtest
-Batch 2 — v0.3 Keep Validation**. The server creates two untracked local files:
+Batch 3 — v0.4 Unlocked-Slot Validation**. The server creates two untracked
+local files:
 
-- `playtest_logs/playtest_batch_02_v0_3_keep_validation.jsonl` contains one
+- `playtest_logs/playtest_batch_03_v0_4_unlocked_slot_validation.jsonl` contains one
   detailed JSON record per game, including every visible spin, Keep selection,
   scored player, category result, repeat count, and final score.
-- `playtest_logs/playtest_batch_02_v0_3_keep_validation.csv` contains one
+- `playtest_logs/playtest_batch_03_v0_4_unlocked_slot_validation.csv` contains one
   summary row per game for quick spreadsheet analysis.
 
 The batch stops recording after ten completed games. Starting or abandoning an
 unfinished game does not consume a batch slot. The `playtest_logs/` directory is
 excluded from Git so local participant data is not committed accidentally.
+Any partially completed Batch 2 files remain untouched for diagnostic analysis.

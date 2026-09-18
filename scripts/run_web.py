@@ -25,8 +25,8 @@ STATIC = ROOT / "web" / "static"
 RECORDS = load_records()
 PLAYTEST_LOGGER = PlaytestBatchLogger(
     ROOT / "playtest_logs",
-    "playtest_batch_02_v0_3_keep_validation",
-    "Playtest Batch 2 — v0.3 Keep Validation",
+    "playtest_batch_03_v0_4_unlocked_slot_validation",
+    "Playtest Batch 3 — v0.4 Unlocked-Slot Validation",
     target=10,
 )
 SESSIONS: dict[str, BrowserGame] = {}

@@ -206,15 +206,20 @@ class StrategicPolicy:
     ) -> tuple[tuple[PlayerTeamSeason, float], ...]:
         key = (current.season, current.team, current.player_id, locks)
         if key not in self._outcome_cache:
-            candidates = tuple(
+            matching = tuple(
                 record for record in self.records
                 if (Lock.SEASON not in locks or record.season == current.season)
                 and (Lock.TEAM not in locks or record.team == current.team)
                 and (Lock.PLAYER not in locks or record.player_id == current.player_id)
-                and record != current
+            )
+            candidates = tuple(
+                record for record in matching
+                if RouletteEngine._changes_all_unlocked(record, current, locks)
             )
             if not candidates:
-                candidates = (current,)
+                candidates = tuple(record for record in matching if record != current)
+            if not candidates:
+                candidates = matching
             self._outcome_cache[key] = _hierarchical_weights(candidates, locks)
         return self._outcome_cache[key]
 

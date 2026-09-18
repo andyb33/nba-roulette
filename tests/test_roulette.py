@@ -132,6 +132,20 @@ class RouletteTests(unittest.TestCase):
         outcomes = [engine.spin(self.current, {Lock.TEAM, Lock.PLAYER}) for _ in range(100)]
         self.assertEqual({row.season for row in outcomes}, {"S2"})
 
+    def test_team_only_keep_changes_both_unlocked_slots(self) -> None:
+        engine = RouletteEngine(self.records, random.Random(34))
+        outcomes = [engine.spin(self.current, {Lock.TEAM}) for _ in range(100)]
+        self.assertTrue(all(row.team == self.current.team for row in outcomes))
+        self.assertTrue(all(row.season != self.current.season for row in outcomes))
+        self.assertTrue(all(row.player_id != self.current.player_id for row in outcomes))
+
+    def test_full_reroll_changes_all_three_slots_when_possible(self) -> None:
+        engine = RouletteEngine(self.records, random.Random(35))
+        outcomes = [engine.spin(self.current) for _ in range(100)]
+        self.assertTrue(all(row.season != self.current.season for row in outcomes))
+        self.assertTrue(all(row.team != self.current.team for row in outcomes))
+        self.assertTrue(all(row.player_id != self.current.player_id for row in outcomes))
+
     def test_only_legal_result_may_repeat(self) -> None:
         only = (make_record("S1", "A", 1),)
         engine = RouletteEngine(only, random.Random(33))
