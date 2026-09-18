@@ -60,3 +60,10 @@ JavaScript. In-memory sessions keep separate games isolated through a cookie.
 These limitations keep the prototype focused on the next evidence question:
 does the full browser game remain understandable and replayable for Human
 Playtest 2?
+
+## Reroll difference rule
+
+Prototype v0.3 excludes the exact current Player × Team × Season result from a
+reroll whenever another valid outcome exists. Keeping Team + Player therefore
+forces a different season; keeping Season + Team forces a different player.
+The fallback permits a repeat only when the selected Keeps leave no alternative.

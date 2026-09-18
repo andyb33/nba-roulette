@@ -53,6 +53,10 @@ See [`docs/GDD_V1_2_CHANGELOG.md`](docs/GDD_V1_2_CHANGELOG.md) and
 [`docs/HUMAN_PLAYTEST_01.md`](docs/HUMAN_PLAYTEST_01.md) for the cumulative
 accolade rule and terminology changes made after the first human playtest.
 
+See [`docs/GDD_V1_3_CHANGELOG.md`](docs/GDD_V1_3_CHANGELOG.md) for the
+playtest-driven reroll difference rule, repeat-rate audit, and rationale for
+not yet adding a game-wide player ban.
+
 ## Rebuild a dataset
 
 ```bash
@@ -100,6 +104,8 @@ Then open `http://127.0.0.1:8000`. The prototype uses only the Python standard
 library and the existing game engine; no additional packages are required.
 See [`docs/WEB_PROTOTYPE.md`](docs/WEB_PROTOTYPE.md) for the included features,
 architecture, v0.2 playtest-driven interface changes, and deliberate limitations.
+Prototype v0.3 also guarantees that a reroll changes the current complete
+player-team-season whenever a legal alternative exists.
 
 ## Game design snapshot
 

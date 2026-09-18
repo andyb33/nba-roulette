@@ -40,6 +40,12 @@ multiple eligible seasons or team stints.
 Locks are supplied again before every reroll, so the player may freely change
 them. A new lock set applies to the current result.
 
+Every reroll excludes the exact current Player × Team × Season result whenever
+at least one legal alternative exists. Keeping Team + Player therefore forces a
+different eligible season, while keeping Season + Team forces a different
+eligible player. The remaining outcomes retain hierarchical equal weighting.
+If the selected Keeps leave only one legal record, that record may repeat.
+
 ## Scoring Defaults
 
 - Statistical scores use round-half-up, not Python's default bankers' rounding.

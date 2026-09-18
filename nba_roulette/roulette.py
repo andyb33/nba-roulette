@@ -33,8 +33,15 @@ class RouletteEngine:
         locks: Iterable[Lock] = (),
     ) -> PlayerTeamSeason:
         lock_set = frozenset(locks)
-        if not lock_set:
+        if not lock_set and current is None:
             return self._resolve(self._standard_tree, lock_set, current)
+        if not lock_set:
+            if len(self.records) == 1:
+                return self.records[0]
+            while True:
+                result = self._resolve(self._standard_tree, lock_set, current)
+                if result != current:
+                    return result
         if current is None:
             raise ValueError("Locks require a current roulette result")
         if lock_set == frozenset(Lock):
@@ -92,8 +99,14 @@ class RouletteEngine:
         key = (current.season, current.team, current.player_id, locks)
         if key not in self._locked_trees:
             candidates = tuple(
-                record for record in self.records if self._matches(record, current, locks)
+                record
+                for record in self.records
+                if self._matches(record, current, locks) and record != current
             )
+            if not candidates:
+                candidates = tuple(
+                    record for record in self.records if self._matches(record, current, locks)
+                )
             if not candidates:
                 raise ValueError("No valid outcomes match the selected locks")
             self._locked_trees[key] = self._build_tree(candidates)

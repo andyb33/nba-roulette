@@ -211,7 +211,10 @@ class StrategicPolicy:
                 if (Lock.SEASON not in locks or record.season == current.season)
                 and (Lock.TEAM not in locks or record.team == current.team)
                 and (Lock.PLAYER not in locks or record.player_id == current.player_id)
+                and record != current
             )
+            if not candidates:
+                candidates = (current,)
             self._outcome_cache[key] = _hierarchical_weights(candidates, locks)
         return self._outcome_cache[key]
 

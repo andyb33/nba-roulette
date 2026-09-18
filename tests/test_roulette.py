@@ -73,26 +73,27 @@ class RouletteTests(unittest.TestCase):
                     if Lock.PLAYER in mask:
                         self.assertEqual(row.player_id, self.current.player_id)
 
-    def test_player_lock_weights_season_before_team(self) -> None:
+    def test_player_lock_weights_remaining_seasons_before_teams(self) -> None:
         engine = RouletteEngine(self.records, random.Random(11))
         outcomes = [engine.spin(self.current, {Lock.PLAYER}) for _ in range(40_000)]
         seasons = Counter(row.season for row in outcomes)
         self.assertAlmostEqual(seasons["S1"] / len(outcomes), 0.5, delta=0.015)
         s1 = [row for row in outcomes if row.season == "S1"]
         teams = Counter(row.team for row in s1)
-        self.assertAlmostEqual(teams["A"] / len(s1), 0.5, delta=0.02)
+        self.assertEqual(teams["A"], 0)
+        self.assertEqual(teams["B"], len(s1))
 
-    def test_season_and_player_lock_equal_weights_trade_stints(self) -> None:
+    def test_season_and_player_lock_excludes_current_trade_stint(self) -> None:
         engine = RouletteEngine(self.records, random.Random(12))
         outcomes = [engine.spin(self.current, {Lock.SEASON, Lock.PLAYER}) for _ in range(20_000)]
         teams = Counter(row.team for row in outcomes)
-        self.assertAlmostEqual(teams["A"] / len(outcomes), 0.5, delta=0.02)
+        self.assertEqual(teams, {"B": len(outcomes)})
 
-    def test_season_and_team_lock_weights_players_equally(self) -> None:
+    def test_season_and_team_lock_excludes_current_player(self) -> None:
         engine = RouletteEngine(self.records, random.Random(13))
         outcomes = [engine.spin(self.current, {Lock.SEASON, Lock.TEAM}) for _ in range(20_000)]
         players = Counter(row.player_id for row in outcomes)
-        self.assertAlmostEqual(players[1] / len(outcomes), 0.5, delta=0.02)
+        self.assertEqual(players, {2: len(outcomes)})
 
     def test_all_locks_disable_reroll(self) -> None:
         engine = RouletteEngine(self.records)
@@ -114,6 +115,27 @@ class RouletteTests(unittest.TestCase):
         third = engine.spin(second, {Lock.PLAYER})
         self.assertEqual(second.season, self.current.season)
         self.assertEqual(third.player_id, second.player_id)
+
+    def test_reroll_excludes_exact_current_result_when_alternative_exists(self) -> None:
+        engine = RouletteEngine(self.records, random.Random(31))
+        for mask in (
+            set(), {Lock.SEASON}, {Lock.TEAM}, {Lock.PLAYER},
+            {Lock.SEASON, Lock.TEAM}, {Lock.SEASON, Lock.PLAYER},
+            {Lock.TEAM, Lock.PLAYER},
+        ):
+            with self.subTest(mask=mask):
+                outcomes = [engine.spin(self.current, mask) for _ in range(500)]
+                self.assertNotIn(self.current, outcomes)
+
+    def test_team_and_player_keep_forces_another_season(self) -> None:
+        engine = RouletteEngine(self.records, random.Random(32))
+        outcomes = [engine.spin(self.current, {Lock.TEAM, Lock.PLAYER}) for _ in range(100)]
+        self.assertEqual({row.season for row in outcomes}, {"S2"})
+
+    def test_only_legal_result_may_repeat(self) -> None:
+        only = (make_record("S1", "A", 1),)
+        engine = RouletteEngine(only, random.Random(33))
+        self.assertEqual(engine.spin(only[0]), only[0])
 
 
 if __name__ == "__main__":
