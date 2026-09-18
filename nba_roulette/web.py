@@ -3,10 +3,14 @@
 from __future__ import annotations
 
 import random
+import uuid
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
+from typing import Any
 
 from .game import GameState, MAX_SPINS_PER_TURN
 from .models import Lock, PlayerTeamSeason
+from .playtest import PlaytestBatchLogger
 from .roulette import RouletteEngine
 from .scoring import Category, UPPER_BONUS_THRESHOLD, UPPER_CATEGORIES
 
@@ -74,22 +78,39 @@ AWARD_META = {
 class BrowserGame:
     records: tuple[PlayerTeamSeason, ...]
     seed: int | None = None
+    logger: PlaytestBatchLogger | None = None
     game: GameState = field(init=False)
+    game_id: str = field(init=False)
+    started_at: str = field(init=False)
+    events: list[dict[str, Any]] = field(init=False, default_factory=list)
+    saved_batch_game: int | None = field(init=False, default=None)
 
     def __post_init__(self) -> None:
         self.game = GameState(RouletteEngine(self.records, random.Random(self.seed)))
+        self.game_id = uuid.uuid4().hex
+        self.started_at = datetime.now(timezone.utc).isoformat()
 
     def spin(self, keeps: list[str] | None = None) -> dict:
         if self.game.is_complete:
             raise ValueError("The game is complete")
         if self.game.turn is None:
             self.game.start_turn()
+            selected_keeps: list[str] = []
         else:
             try:
                 locks = tuple(Lock(value) for value in (keeps or []))
             except ValueError as error:
                 raise ValueError("Unknown Keep selection") from error
             self.game.reroll(locks)
+            selected_keeps = [lock.value for lock in locks]
+        turn = self.game.turn
+        self.events.append({
+            "event": "spin",
+            "turn": self.game.turns_completed + 1,
+            "spin": turn.spins_used,
+            "keeps": selected_keeps,
+            "result": self._record_identity(turn.current),
+        })
         return self.state()
 
     def score(self, category_name: str) -> dict:
@@ -99,7 +120,19 @@ class BrowserGame:
             category = Category(category_name)
         except ValueError as error:
             raise ValueError("Unknown score category") from error
-        self.game.score(category)
+        current = self.game.turn.current
+        spins_used = self.game.turn.spins_used
+        value = self.game.score(category)
+        self.events.append({
+            "event": "score",
+            "turn": self.game.turns_completed,
+            "category": category.value,
+            "score": value,
+            "spins_used": spins_used,
+            "result": self._record_identity(current),
+        })
+        if self.game.is_complete and self.logger and self.saved_batch_game is None:
+            self.saved_batch_game = self.logger.save(self._playtest_record())
         return self.state()
 
     def state(self) -> dict:
@@ -125,6 +158,7 @@ class BrowserGame:
             "upper_total": upper_total,
             "upper_target": UPPER_BONUS_THRESHOLD,
             "bonus": self.game.bonus,
+            "playtest": self._playtest_status(),
             "spins_used": turn.spins_used if turn else 0,
             "spins_total": MAX_SPINS_PER_TURN,
             "rerolls_left": MAX_SPINS_PER_TURN - turn.spins_used if turn else 0,
@@ -142,6 +176,63 @@ class BrowserGame:
                 }
                 for category in Category
             ],
+        }
+
+    def _playtest_status(self) -> dict | None:
+        if not self.logger:
+            return None
+        completed = self.logger.completed_count()
+        return {
+            "batch_id": self.logger.batch_id,
+            "batch_name": self.logger.batch_name,
+            "target": self.logger.target,
+            "completed": completed,
+            "saved_batch_game": self.saved_batch_game,
+            "full": completed >= self.logger.target,
+        }
+
+    def _playtest_record(self) -> dict:
+        spin_events = [event for event in self.events if event["event"] == "spin"]
+        player_ids = [event["result"]["player_id"] for event in spin_events]
+        accolade_categories = {
+            Category.ALL_NBA_THIRD, Category.ALL_NBA_SECOND, Category.ALL_NBA_FIRST,
+            Category.CHAMPION, Category.ALL_DEFENSE_SECOND,
+            Category.ALL_DEFENSE_FIRST, Category.MAJOR_AWARD,
+        }
+        upper_score = sum(self.game.scorecard.get(category, 0) for category in UPPER_CATEGORIES)
+        categories = {
+            category.value: {
+                "score": self.game.scorecard[category],
+                **self._record_identity(self.game.scored_records[category]),
+            }
+            for category in Category
+        }
+        return {
+            "game_id": self.game_id,
+            "started_at": self.started_at,
+            "completed_at": datetime.now(timezone.utc).isoformat(),
+            "final_score": self.game.total_score,
+            "upper_score": upper_score,
+            "bonus": self.game.bonus,
+            "zero_accolades": sum(
+                self.game.scorecard[category] == 0 for category in accolade_categories
+            ),
+            "spins_seen": len(spin_events),
+            "rerolls_used": len(spin_events) - len(Category),
+            "keep_uses": sum(bool(event["keeps"]) for event in spin_events),
+            "unique_players_seen": len(set(player_ids)),
+            "repeated_player_appearances": len(player_ids) - len(set(player_ids)),
+            "categories": categories,
+            "events": self.events,
+        }
+
+    @staticmethod
+    def _record_identity(record: PlayerTeamSeason) -> dict:
+        return {
+            "season": record.season,
+            "team": record.team,
+            "player_id": record.player_id,
+            "player": record.player,
         }
 
     @staticmethod
